@@ -48,10 +48,11 @@ Never send the `label` field of inbox emails to Claude or the UI. It is only for
 4. Score (formula, deterministic):
    - E by email_type: settlement_notice 1.0, breach_notice 0.95, receipt/order 0.9, renewal/billing 0.9, account_notice 0.7, marketing 0.3, other 0.3.
    - M: exact/alias 1.0, parent 0.8, fuzzy token overlap 0.5.
-   - T: inside class period 1.0, period missing 0.7, outside 0.2. If the settlement `match_rule` is `breach_notice` AND the evidence is a breach_notice or settlement_notice from that company, T = 1.0.
+   - T: inside class period 1.0, period missing 0.7, outside 0.2. If the settlement `match_rule` is `breach_notice` AND the evidence is a breach_notice from that company, T = 1.0. A settlement_notice from that company is T = 1.0 for every match_rule (a notice date is not a transaction date).
    - P: product keyword found 1.0, settlement has no product_keywords 0.9, keywords exist but none found 0.6.
    - State: if `state_restriction` is set and `billing_state` is a different state -> drop; if unknown -> multiply by 0.7.
    - confidence = min(0.99, E*M*T*P + 0.05 per extra matching email for the same settlement, max +0.15).
+     An extra email only counts (and is listed as supporting) if its own score is >= 0.30 and P is not 0.6.
    - Drop any email with `is_false_positive = true` before scoring.
    - Bands: high >= 0.75, likely >= 0.50, possible >= 0.30, else hidden.
    - Group by settlement; strongest email = primary evidence; others listed as supporting.
