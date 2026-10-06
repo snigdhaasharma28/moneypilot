@@ -34,7 +34,7 @@ email that proves it: "Because we found your iPhone 16 Pro 256GB, AppleCare+ ord
 3. **Scanning.** Counts up the real stats from the API: emails read → purchases and notices → claims matched.
 4. **Feed.** A green summary card (claims found, estimated total, emails read, purchases and notices
    found), a search bar and a filter button, then the "For You" list. Claims are grouped into High, Likely
-   and Possible, highest confidence first inside each group. The filter opens a two-pane "Filters" popover with two options: deadline (next 7, 30, 60 or 90 days) and
+   and Possible, ranked inside each group by confidence × payout (the API order). The filter opens a two-pane "Filters" popover with two options: deadline (next 7, 30, 60 or 90 days) and
    payout (up to $100, $100 - $500, $500 - $1,000, $1,000+, by the claim's largest payout). Search matches the settlement name, company and product. Each card shows the settlement,
    a band pill (High / Likely / Possible; the numeric score stays behind the scenes for ranking), the reason line,
    the payout range, the deadline with days left (red when 14 days or fewer), and "Proof needed" / "Notice ID needed" tags.

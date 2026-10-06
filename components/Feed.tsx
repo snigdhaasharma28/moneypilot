@@ -350,10 +350,8 @@ export default function Feed({ result, onRestart }: Props) {
       )}
 
       {BANDS.map((band) => {
-        // Highest confidence first inside each band.
-        const claims = shown
-          .filter((c) => bandOf(c) === band)
-          .sort((x, y) => y.confidence - x.confidence);
+        // Keep the API order inside each band (confidence x payout, see lib/score.ts).
+        const claims = shown.filter((c) => bandOf(c) === band);
         if (claims.length === 0) return null;
         return (
           <section key={band} className="mb-6">
