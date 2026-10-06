@@ -1,0 +1,50 @@
+set,id,from_name,from_email,subject,date,label_category,is_trap,expected_settlements,kept_by_prefilter,extracted_company,extracted_brand,extracted_type,flagged_false_positive,used_as,matched_settlement,band,confidence,correct
+inbox,e01,Apple Store,order_acknowledgment@orders.apple.com,We're processing your order W1384920577,2024-09-20,order,false,apple-siri,true,Apple,,order,false,primary,apple-siri,high,0.9,yes
+inbox,e02,Amazon.com,auto-confirm@amazon.com,Your Amazon.com order #112-4492017-3381045,2021-11-26,order,false,levoit-hepa,true,Amazon,LEVOIT,order,false,primary,levoit-hepa,high,0.9,yes
+inbox,e03,Best Buy,BestBuyInfo@emailinfo.bestbuy.com,Thanks for your order! BBY01-806729941355,2022-03-14,order,false,thinkware-dashcam,true,Best Buy,Thinkware,order,false,primary,thinkware-dashcam,high,0.9,yes
+inbox,e04,Dr. Squatch,orders@drsquatch.com,Order #DS-2384719 confirmed — your soap is on the way,2023-02-10,order,false,dr-squatch-natural,true,Dr. Squatch,,order,false,primary,dr-squatch-natural,high,0.86,yes
+inbox,e05,Raging Waters Los Angeles,tickets@ragingwaters.com,Your Raging Waters tickets — Order RW-55190832,2023-07-08,order,false,raging-waters-fee,true,Raging Waters Los Angeles,,order,false,supporting,raging-waters-fee,high,0.99,yes
+inbox,e06,CVS Pharmacy,CVS@notifications.cvs.com,Your CVS.com order has been placed,2025-08-19,order,false,cvs-digital-privacy,true,CVS,,order,false,primary,cvs-digital-privacy,high,0.86,yes
+inbox,e07,Amazon.com,return@amazon.com,Your return drop off confirmation,2022-01-12,receipt,false,amazon-returns,true,Amazon,Anker,receipt,false,primary,amazon-returns,high,0.95,yes
+inbox,e08,Amazon.com,return@amazon.com,"Your refund for Anker USB-C Hub, 7-in-1",2022-02-28,receipt,false,amazon-returns,true,Amazon,Anker,receipt,false,supporting,amazon-returns,high,0.95,yes
+inbox,e09,The Venetian Resort Las Vegas,reservations@venetianlasvegas.com,Reservation Confirmed — Confirmation #VEN8841203,2025-02-03,receipt,false,venetian-privacy,true,The Venetian Resort Las Vegas,,order,false,primary,venetian-privacy,high,0.9,yes
+inbox,e10,Uber Receipts,noreply@uber.com,Your Sunday afternoon trip with Uber,2026-09-27,receipt,false,,false,,,,,not used,,,,yes
+inbox,e11,DoorDash,no-reply@doordash.com,Order Confirmation for Priya from Tacos El Gordo,2026-08-30,receipt,false,,true,DoorDash,Tacos El Gordo,order,false,not used,,,,yes
+inbox,e12,Flo,hello@flo.health,Welcome to Flo Premium,2018-04-02,subscription_started,false,flo-period-tracker,true,Flo,,billing,false,primary,flo-period-tracker,high,0.81,yes
+inbox,e13,TED,noreply@ted.com,Welcome to TED — your account is ready,2022-01-15,subscription_started,false,ted-vppa,true,TED,,account_notice,false,supporting,ted-vppa,high,0.99,yes
+inbox,e14,Spotify,no-reply@spotify.com,Welcome to Spotify Premium,2024-05-03,subscription_started,false,,true,Spotify,,billing,false,not used,,,,yes
+inbox,e15,Dr. Squatch,subscriptions@drsquatch.com,Your Squatch subscription ships soon,2024-06-01,renewal,false,dr-squatch-natural,true,Dr. Squatch,,renewal,false,supporting,dr-squatch-natural,high,0.86,yes
+inbox,e16,Equinox,membership@equinox.com,Your Equinox membership payment receipt,2024-03-01,trap,true,,true,Equinox,,billing,false,not used,,,,yes
+inbox,e17,Netflix,info@account.netflix.com,Your Netflix membership has been renewed,2026-09-14,renewal,false,,true,Netflix,,renewal,false,not used,,,,yes
+inbox,e18,Apple,no_reply@email.apple.com,Your receipt from Apple — iCloud+,2025-08-02,renewal,false,,true,Apple,,billing,false,not used,,,,yes
+inbox,e19,Verizon,VZWMail@ecrmemail.verizonwireless.com,We received your payment,2026-09-22,payment,false,,true,Verizon,,billing,false,not used,,,,yes
+inbox,e20,Chase,no.reply.alerts@chase.com,Your credit card payment is scheduled,2026-09-25,payment,false,,true,Chase,,other,true,not used,,,,yes
+inbox,e21,United Airlines,receipts@united.com,eTicket Itinerary and Receipt for Confirmation K7QW2M,2026-07-11,payment,false,,true,United Airlines,,receipt,false,not used,,,,yes
+inbox,e22,Autobell Car Wash,washclub@autobell.com,Thanks for your Unlimited Wash Club payment,2024-02-10,payment,false,autobell-breach,true,Autobell Car Wash,,billing,false,supporting,autobell-breach,high,0.91,yes
+inbox,e23,Equifax,noreply@equifax.com,Your dispute results are ready,2023-05-18,account_notice,false,equifax-hard-inquiry,true,Equifax,,account_notice,false,primary,equifax-hard-inquiry,likely,0.7,yes
+inbox,e24,MDLIVE,noreply@mdlive.com,Your visit summary is ready,2024-02-11,account_notice,false,mdlive-privacy,true,MDLIVE,,account_notice,false,primary,mdlive-privacy,possible,0.35,yes
+inbox,e25,CVS Pharmacy,CVS@notifications.cvs.com,Your CVS.com password was changed,2026-03-04,account_notice,false,cvs-digital-privacy,true,CVS Pharmacy,,account_notice,false,supporting,cvs-digital-privacy,high,0.86,yes
+inbox,e26,TED,recommends@ted.com,Your month on TED: 5 talks watched,2024-10-02,account_notice,false,ted-vppa,true,TED,,account_notice,false,supporting,ted-vppa,high,0.99,yes
+inbox,e27,Lands' End,landsend@em.landsend.com,We're updating our Terms of Use and Privacy Policy,2024-06-12,account_notice,false,lands-end-breach,true,Lands' End,,account_notice,false,supporting,lands-end-breach,high,0.91,yes
+inbox,e28,Lands' End,privacy@landsend.com,Notice of Data Security Incident,2025-01-24,breach_notice,false,lands-end-breach,true,Lands' End,,breach_notice,false,primary,lands-end-breach,high,0.91,yes
+inbox,e29,"Equinox, Inc.",privacy@equinoxinc.org,Notice of Data Security Incident,2024-08-15,breach_notice,false,equinox-breach,true,"Equinox, Inc.",,breach_notice,false,primary,equinox-breach,high,0.86,yes
+inbox,e30,Autobell Car Wash,notice@autobell.com,Notice of Data Security Incident,2024-06-20,breach_notice,false,autobell-breach,true,Autobell Car Wash,,breach_notice,false,primary,autobell-breach,high,0.91,yes
+inbox,e31,TED Settlement Administrator,noreply@tedvppasettlement.com,Notice of Class Action Settlement — Sutton v. TED Foundation Inc.,2026-08-30,settlement_notice,false,ted-vppa,true,TED Foundation Inc.,,settlement_notice,false,primary,ted-vppa,high,0.99,yes
+inbox,e32,Raging Waters Settlement Administrator,info@ragingwaterssettlement.com,Legal Notice: Raging Waters Processing Fee Class Action Settlement,2026-08-12,settlement_notice,false,raging-waters-fee,true,Raging Waters,,settlement_notice,false,primary,raging-waters-fee,high,0.99,yes
+inbox,e33,Priya Shah,priya.shah@example.com,Re: amazon refund thing,2026-09-18,trap,true,,true,,,other,true,not used,,,,yes
+inbox,e34,The Daily Docket,news@dailydocket.news,Apple's $250M Siri settlement: who can claim,2026-09-23,trap,true,,true,,,marketing,true,not used,,,,yes
+inbox,e35,CVS Settlement Payouts,claims@cvs-settlement-payouts.co,"URGENT: You are owed $1,250 from the CVS settlement",2026-10-01,trap,true,,true,,,other,true,not used,,,,yes
+inbox,e36,Kroger,kroger@email.kroger.com,"This week's Digital Deals are here, Priya",2026-09-30,trap,true,,true,Kroger,,marketing,false,not used,,,,yes
+inbox,e37,Walmart.com,help@walmart.com,Thanks for your order #2000124-77351890,2025-06-14,trap,true,,true,Walmart.com,Bestway,order,false,not used,,,,yes
+inbox,e38,Venetian Blinds Direct,orders@venetianblindsdirect.com,Your Venetian Blinds Direct order is confirmed,2025-04-09,trap,true,,true,Venetian Blinds Direct,,order,false,not used,,,,yes
+inbox,e39,Chase,no.reply.alerts@chase.com,Your one-time code,2026-10-05,noise,false,,false,,,,,not used,,,,yes
+inbox,e40,Rahul Mehta,rahul.mehta@northwindlabs.example,Q4 roadmap review — moving to Thursday,2026-10-02,noise,false,,false,,,,,not used,,,,yes
+inbox,e41,Mom,lata.shah@example.net,Diwali plans,2026-09-29,noise,false,,false,,,,,not used,,,,yes
+inbox,e42,LinkedIn Job Alerts,jobalerts-noreply@linkedin.com,12 new jobs for Senior Product Manager in San Jose,2026-10-04,noise,false,,true,,,marketing,true,not used,,,,yes
+inbox,e43,Lenny's Newsletter,lenny@substack.com,How the best teams run growth experiments,2026-10-01,noise,false,,false,,,,,not used,,,,yes
+inbox,e44,Google Calendar,calendar-notification@google.com,"Invitation: Dentist — Dr. Lee @ Thu Oct 15, 2026 9am",2026-09-20,noise,false,,false,,,,,not used,,,,yes
+inbox,e45,Sephora,beauty@e.sephora.com,Savings Event starts now: up to 20% off,2026-10-03,noise,false,,false,,,,,not used,,,,yes
+real,r01,Apple Store,your_order_US@orders.apple.com,We're processing your order W16333•••••,2024-10-19,order,false,apple-siri,true,Apple,,order,false,primary,apple-siri,high,0.9,yes
+real,r02,service@paypal.com,service@paypal.com,Fabletics: $59.95 USD,2025-09-10,payment,false,,true,Fabletics,,billing,false,not used,,,,yes
+real,r03,Lyft Receipts,no-reply@lyftmail.com,Your receipt for rides on June 18,2025-06-19,receipt,false,,true,Lyft,,receipt,false,not used,,,,yes
+real,r04,WHOOP,no-reply@notifications.whoop.com,Thank You For Your Order,2025-07-31,subscription_started,false,,true,WHOOP,,order,false,not used,,,,yes

@@ -186,6 +186,10 @@ from Likely (0.63) to Possible (0.35) because the email shows a visit but not th
 requires. Its label accepts either band. At 0.35 it sits close to the 0.30 cut-off, so a stricter verdict on
 a rerun could hide it; that is the main risk the judge adds.
 
+**Per-email tracker.** `data/email-tracker.csv` lists all 49 sample emails with their label, what Claude
+extracted, and whether each was used as primary proof, supporting proof or not at all. Regenerate it with
+`npx tsx --env-file=.env.local scripts/email-tracker.ts`.
+
 How to read these numbers:
 
 - The synthetic inbox was written against the settlement list, and the matching rules and extraction prompt
