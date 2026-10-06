@@ -13,19 +13,24 @@ const UNDO_MS = 6000;
 const payoutOf = (c: Claim) => c.payout_max ?? c.payout_min;
 
 // Filter options. Payout range tests the claim's largest payout; deadline tests days left.
+// No option selected means no filter.
 const PAYOUT_FILTERS = [
-  { label: "Any", test: () => true },
   { label: "Under $25", test: (c: Claim) => (payoutOf(c) ?? Infinity) < 25 },
-  { label: "$25 – $100", test: (c: Claim) => (payoutOf(c) ?? -1) >= 25 && (payoutOf(c) ?? -1) <= 100 },
-  { label: "$100 – $1,000", test: (c: Claim) => (payoutOf(c) ?? -1) > 100 && (payoutOf(c) ?? -1) <= 1000 },
+  {
+    label: "$25 – $100",
+    test: (c: Claim) => (payoutOf(c) ?? -1) >= 25 && (payoutOf(c) ?? -1) <= 100,
+  },
+  {
+    label: "$100 – $1,000",
+    test: (c: Claim) => (payoutOf(c) ?? -1) > 100 && (payoutOf(c) ?? -1) <= 1000,
+  },
   { label: "Over $1,000", test: (c: Claim) => (payoutOf(c) ?? -1) > 1000 },
 ];
-const DEADLINE_FILTERS = [
-  { label: "Any", test: () => true },
-  { label: "Within 14 days", test: (c: Claim) => c.days_left <= 14 },
-  { label: "Within 30 days", test: (c: Claim) => c.days_left <= 30 },
-  { label: "Within 60 days", test: (c: Claim) => c.days_left <= 60 },
-];
+const DEADLINE_FILTERS = [7, 30, 60, 90].map((days) => ({
+  label: `Next ${days} days`,
+  test: (c: Claim) => c.days_left <= days,
+}));
+type FilterTab = "deadline" | "payout";
 
 function matchesSearch(c: Claim, query: string): boolean {
   const q = query.trim().toLowerCase();
@@ -33,30 +38,32 @@ function matchesSearch(c: Claim, query: string): boolean {
   return [c.name, c.company, c.primary.product ?? ""].some((t) => t.toLowerCase().includes(q));
 }
 
-function FilterChips({ label, options, value, onChange }: {
-  label: string;
+function FilterTiles({
+  options,
+  value,
+  onChange,
+}: {
   options: { label: string }[];
-  value: number;
-  onChange: (i: number) => void;
+  value: number | null;
+  onChange: (i: number | null) => void;
 }) {
   return (
-    <div>
-      <p className="mb-2 text-sm font-semibold">{label}</p>
-      <div className="flex flex-wrap gap-2">
-        {options.map((o, i) => (
-          <button
-            key={o.label}
-            type="button"
-            aria-pressed={value === i}
-            onClick={() => onChange(i)}
-            className={`rounded-full px-3 py-1.5 text-sm font-medium ${
-              value === i ? "bg-accent text-white" : "bg-stone-100 text-foreground/75"
-            }`}
-          >
-            {o.label}
-          </button>
-        ))}
-      </div>
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+      {options.map((o, i) => (
+        <button
+          key={o.label}
+          type="button"
+          aria-pressed={value === i}
+          onClick={() => onChange(value === i ? null : i)}
+          className={`rounded-2xl border px-3 py-5 text-left text-sm font-medium ${
+            value === i
+              ? "border-accent bg-accent/10 text-accent"
+              : "border-stone-300 text-foreground/80"
+          }`}
+        >
+          {o.label}
+        </button>
+      ))}
     </div>
   );
 }
@@ -73,8 +80,9 @@ export default function Feed({ result, onRestart }: Props) {
   const [openId, setOpenId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [filterOpen, setFilterOpen] = useState(false);
-  const [payoutFilter, setPayoutFilter] = useState(0); // index into PAYOUT_FILTERS
-  const [deadlineFilter, setDeadlineFilter] = useState(0); // index into DEADLINE_FILTERS
+  const [filterTab, setFilterTab] = useState<FilterTab>("deadline");
+  const [payoutFilter, setPayoutFilter] = useState<number | null>(null); // index into PAYOUT_FILTERS
+  const [deadlineFilter, setDeadlineFilter] = useState<number | null>(null); // index into DEADLINE_FILTERS
   const [startedId, setStartedId] = useState<string | null>(null); // claim shown on the detail screen
   const [submitted, setSubmitted] = useState<string[]>([]); // claims taken through the sign step
   const feedScroll = useRef(0);
@@ -90,22 +98,26 @@ export default function Feed({ result, onRestart }: Props) {
   const visible = result.claims.filter((c) => !hidden.includes(c.settlement_id));
   const open = visible.find((c) => c.settlement_id === openId);
   const maxTotal = visible.reduce((sum, c) => sum + (c.payout_max ?? 0), 0);
-  const activeFilters = (payoutFilter > 0 ? 1 : 0) + (deadlineFilter > 0 ? 1 : 0);
+  const activeFilters = (payoutFilter !== null ? 1 : 0) + (deadlineFilter !== null ? 1 : 0);
   const shown = visible.filter(
     (c) =>
       matchesSearch(c, query) &&
-      PAYOUT_FILTERS[payoutFilter].test(c) &&
-      DEADLINE_FILTERS[deadlineFilter].test(c),
+      (payoutFilter === null || PAYOUT_FILTERS[payoutFilter].test(c)) &&
+      (deadlineFilter === null || DEADLINE_FILTERS[deadlineFilter].test(c)),
   );
 
   function clearFilters() {
     setQuery("");
-    setPayoutFilter(0);
-    setDeadlineFilter(0);
+    setPayoutFilter(null);
+    setDeadlineFilter(null);
   }
 
   function notMe(claim: Claim) {
-    console.log({ event: "not_me", settlement_id: claim.settlement_id, confidence: claim.confidence });
+    console.log({
+      event: "not_me",
+      settlement_id: claim.settlement_id,
+      confidence: claim.confidence,
+    });
     setHidden((ids) => [...ids, claim.settlement_id]);
     setLastHidden(claim);
   }
@@ -151,7 +163,8 @@ export default function Feed({ result, onRestart }: Props) {
               </h1>
               {maxTotal > 0 && (
                 <p className="mt-1 text-white/85">
-                  up to <span className="font-semibold text-yellow-200">{formatMoney(maxTotal)}</span>{" "}
+                  up to{" "}
+                  <span className="font-semibold text-yellow-200">{formatMoney(maxTotal)}</span>{" "}
                   <span className="text-sm">(estimate, if every maximum payout applied)</span>
                 </p>
               )}
@@ -160,10 +173,12 @@ export default function Feed({ result, onRestart }: Props) {
                   Read <b className="text-yellow-200">{result.stats.total_emails}</b> emails
                 </li>
                 <li>
-                  Found <b className="text-yellow-200">{result.stats.purchases_and_notices}</b> purchases and notices
+                  Found <b className="text-yellow-200">{result.stats.purchases_and_notices}</b>{" "}
+                  purchases and notices
                 </li>
                 <li>
-                  Matched them to <b className="text-yellow-200">{result.claims.length}</b> open settlements
+                  Matched them to <b className="text-yellow-200">{result.claims.length}</b> open
+                  settlements
                 </li>
               </ul>
             </div>
@@ -175,59 +190,118 @@ export default function Feed({ result, onRestart }: Props) {
             </div>
           </section>
 
-          <div className="mt-5 flex gap-2">
-            <label className="flex flex-1 items-center gap-2 rounded-2xl border border-stone-300 bg-white px-4 py-3">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-foreground/50" aria-hidden>
-                <circle cx="11" cy="11" r="7" />
-                <path d="m20 20-3.5-3.5" />
-              </svg>
-              <input
-                type="search"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search claims"
-                aria-label="Search claims"
-                className="w-full bg-transparent text-base outline-none placeholder:text-foreground/50"
-              />
-            </label>
-            <button
-              type="button"
-              onClick={() => setFilterOpen((o) => !o)}
-              aria-expanded={filterOpen}
-              aria-label="Filter claims"
-              className="relative flex w-14 items-center justify-center rounded-2xl border border-stone-300 bg-white"
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
-                <path d="M4 7h10M18 7h2M4 17h2M10 17h10" />
-                <circle cx="16" cy="7" r="2" />
-                <circle cx="8" cy="17" r="2" />
-              </svg>
-              {activeFilters > 0 && (
-                <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-accent text-xs font-semibold text-white">
-                  {activeFilters}
-                </span>
-              )}
-            </button>
-          </div>
-
-          {filterOpen && (
-            <div className="mt-3 space-y-4 rounded-2xl bg-white p-4 shadow-sm">
-              <FilterChips label="Payout range" options={PAYOUT_FILTERS} value={payoutFilter} onChange={setPayoutFilter} />
-              <FilterChips label="Deadline" options={DEADLINE_FILTERS} value={deadlineFilter} onChange={setDeadlineFilter} />
-              {activeFilters > 0 && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setPayoutFilter(0);
-                    setDeadlineFilter(0);
-                  }}
-                  className="text-sm font-semibold text-accent"
+          <div className="relative mt-5">
+            <div className="flex gap-2">
+              <label className="flex flex-1 items-center gap-2 rounded-2xl border border-stone-300 bg-white px-4 py-3">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  className="text-foreground/50"
+                  aria-hidden
                 >
-                  Reset filters
-                </button>
-              )}
+                  <circle cx="11" cy="11" r="7" />
+                  <path d="m20 20-3.5-3.5" />
+                </svg>
+                <input
+                  type="search"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search claims"
+                  aria-label="Search claims"
+                  className="w-full bg-transparent text-base outline-none placeholder:text-foreground/50"
+                />
+              </label>
+              <button
+                type="button"
+                onClick={() => setFilterOpen((o) => !o)}
+                aria-expanded={filterOpen}
+                aria-label="Filter claims"
+                className="relative flex w-14 items-center justify-center rounded-2xl border border-stone-300 bg-white"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  aria-hidden
+                >
+                  <path d="M4 7h10M18 7h2M4 17h2M10 17h10" />
+                  <circle cx="16" cy="7" r="2" />
+                  <circle cx="8" cy="17" r="2" />
+                </svg>
+                {activeFilters > 0 && (
+                  <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-accent text-xs font-semibold text-white">
+                    {activeFilters}
+                  </span>
+                )}
+              </button>
             </div>
-          )}
+
+            {filterOpen && (
+              <div className="absolute inset-x-0 top-full z-20 mt-2 overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-xl">
+                <p className="border-b border-stone-200 px-5 py-4 font-semibold">Filters</p>
+                <div className="flex min-h-64">
+                  <nav className="w-36 shrink-0 border-r border-stone-200 p-2 text-sm">
+                    {(
+                      [
+                        ["deadline", "Deadline", deadlineFilter],
+                        ["payout", "Payout range", payoutFilter],
+                      ] as const
+                    ).map(([key, label, chosen]) => (
+                      <button
+                        key={key}
+                        type="button"
+                        onClick={() => setFilterTab(key)}
+                        className={`flex w-full items-center justify-between rounded-xl px-3 py-3 text-left ${
+                          filterTab === key ? "bg-stone-100 font-semibold" : "text-foreground/70"
+                        }`}
+                      >
+                        {label}
+                        {chosen !== null && (
+                          <span className="h-2 w-2 rounded-full bg-accent" aria-label="active" />
+                        )}
+                      </button>
+                    ))}
+                  </nav>
+                  <div className="flex-1 p-4">
+                    {filterTab === "deadline" ? (
+                      <FilterTiles
+                        options={DEADLINE_FILTERS}
+                        value={deadlineFilter}
+                        onChange={setDeadlineFilter}
+                      />
+                    ) : (
+                      <FilterTiles
+                        options={PAYOUT_FILTERS}
+                        value={payoutFilter}
+                        onChange={setPayoutFilter}
+                      />
+                    )}
+                  </div>
+                </div>
+                <div className="flex items-center justify-between border-t border-stone-200 px-5 py-3 text-sm font-semibold text-accent">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPayoutFilter(null);
+                      setDeadlineFilter(null);
+                    }}
+                  >
+                    Reset
+                  </button>
+                  <button type="button" onClick={() => setFilterOpen(false)}>
+                    Done
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
 
           <div className="mb-4 mt-5">
             <span className="inline-block rounded-full border-2 border-accent bg-white px-5 py-2 font-semibold text-accent">
@@ -238,7 +312,11 @@ export default function Feed({ result, onRestart }: Props) {
           {shown.length === 0 && (
             <div className="rounded-2xl bg-white p-6 text-center shadow-sm">
               <p className="font-semibold">No claims match your search or filters.</p>
-              <button type="button" onClick={clearFilters} className="mt-2 text-sm font-semibold text-accent">
+              <button
+                type="button"
+                onClick={clearFilters}
+                className="mt-2 text-sm font-semibold text-accent"
+              >
                 Clear search and filters
               </button>
             </div>
@@ -287,7 +365,9 @@ export default function Feed({ result, onRestart }: Props) {
         <p>
           Settlement data as of {formatDate(result.snapshot_date)} from openclassactions.com and
           topclassactions.com
-          <span className="ml-2 rounded-full bg-foreground/10 px-2 py-0.5 font-semibold">{result.mode}</span>
+          <span className="ml-2 rounded-full bg-foreground/10 px-2 py-0.5 font-semibold">
+            {result.mode}
+          </span>
         </p>
       </footer>
 
@@ -297,7 +377,11 @@ export default function Feed({ result, onRestart }: Props) {
           className="fixed inset-x-4 bottom-4 z-10 mx-auto flex max-w-md items-center justify-between gap-3 rounded-full bg-foreground px-5 py-3 text-sm text-white shadow-lg"
         >
           <span className="truncate">Hidden: {lastHidden.company}</span>
-          <button type="button" onClick={() => undo(lastHidden)} className="font-semibold underline">
+          <button
+            type="button"
+            onClick={() => undo(lastHidden)}
+            className="font-semibold underline"
+          >
             Undo
           </button>
         </div>
