@@ -45,32 +45,35 @@ interface Props {
 
 export default function ClaimCard({ claim, band, needsAnswer, onWhy, onNotMe, onConfirm }: Props) {
   return (
-    <article className="flex flex-col gap-3 rounded-2xl bg-white p-4 shadow-sm">
+    <article className="flex flex-col gap-3 rounded-2xl bg-white p-4 shadow-sm md:gap-4 md:p-6">
       <header className="flex items-start gap-3">
         <Avatar company={claim.company} />
-        <h3 className="min-w-0 flex-1 font-semibold leading-snug">{claim.name}</h3>
+        <h3 className="min-w-0 flex-1 font-semibold leading-snug md:text-lg">{claim.name}</h3>
         <ConfidencePill band={band} />
       </header>
 
       <p className="text-sm text-foreground/75">{claim.reason}</p>
 
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <span className="text-lg font-semibold text-accent">{payoutRange(claim)}</span>
-        <span className="flex items-center gap-2 text-xs text-foreground/65">
-          Due {formatDate(claim.claim_deadline)}
-          <span
-            className={`rounded-full px-2 py-0.5 font-semibold ${
-              claim.deadline_soon ? "bg-red-100 text-red-700" : "bg-stone-100 text-stone-700"
-            }`}
-          >
-            {daysLeftLabel(claim.days_left)}
+      {/* Phone: payout row then tags row. Web: one row, payout left and tags right. */}
+      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-2 md:justify-start md:gap-4">
+          <span className="text-lg font-semibold text-accent md:text-2xl">{payoutRange(claim)}</span>
+          <span className="flex items-center gap-2 text-xs text-foreground/65">
+            Due {formatDate(claim.claim_deadline)}
+            <span
+              className={`rounded-full px-2 py-0.5 font-semibold ${
+                claim.deadline_soon ? "bg-red-100 text-red-700" : "bg-stone-100 text-stone-700"
+              }`}
+            >
+              {daysLeftLabel(claim.days_left)}
+            </span>
           </span>
-        </span>
-      </div>
+        </div>
 
-      <div className="flex flex-wrap gap-1.5">
-        {claim.proof_required ? <Tag>Proof needed</Tag> : <Tag>No proof needed</Tag>}
-        {claim.notice_id_required && <Tag>Notice ID needed</Tag>}
+        <div className="flex flex-wrap gap-1.5">
+          {claim.proof_required ? <Tag>Proof needed</Tag> : <Tag>No proof needed</Tag>}
+          {claim.notice_id_required && <Tag>Notice ID needed</Tag>}
+        </div>
       </div>
 
       {needsAnswer && (

@@ -44,7 +44,7 @@ export default function Feed({ result, onRestart }: Props) {
   }
 
   return (
-    <main className="mx-auto w-full max-w-md flex-1 px-4 py-6 md:max-w-4xl md:px-6">
+    <main className="mx-auto w-full max-w-md flex-1 px-4 py-6 md:max-w-3xl md:px-6">
       <header className="mb-5">
         <div className="flex items-center justify-between">
           <p className="text-sm font-semibold uppercase tracking-wide text-accent">For You</p>
@@ -83,7 +83,7 @@ export default function Feed({ result, onRestart }: Props) {
             <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-foreground/60">
               {BAND_LABEL[band]} · {claims.length}
             </h2>
-            <div className="grid gap-3 md:grid-cols-2">
+            <div className="grid gap-3 md:gap-4">
               {claims.map((claim) => (
                 <ClaimCard
                   key={claim.settlement_id}

@@ -81,7 +81,7 @@ Be strict. Never guess a product, date or state not in the email. Return only JS
 
 ## UI and brand
 - Product framing: MoneyPilot's real app already has a "For You" tab next to "All". This feature is what powers "For You". Mirror the real app's claim card pattern: company logo/initial, settlement name, payout, "No proof needed" tag, "{n}+ filed"-style social proof is NOT available here, so skip it.
-- Mobile-first at 390 px, must also look fine at 1280 px.
+- Mobile-first at 390 px, must also look fine at 1280 px. On web the feed is one centred column of wide cards (payout left, tags right, full-width Start claim), like the real MoneyPilot web app; no multi-column grid.
 - Header on every screen (`components/Header.tsx`): MoneyPilot wordmark on the left, profile avatar on the right. Both are drawn in code (no logo file, no real account).
 - Headline font: Protest Strike (Google Fonts via next/font). Body: Inter.
 - Accent green #1C7359. Background warm beige #F6F0E6. Cards white, rounded-2xl, soft shadow.
