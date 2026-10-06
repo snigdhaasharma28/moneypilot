@@ -3,6 +3,8 @@
 Reads an inbox, finds proof of what a person bought or used, matches it to open class-action settlements,
 and shows a ranked feed of claims with the email that proves each one.
 
+**Live demo:** https://moneypilot-one.vercel.app/
+
 ## Problem
 
 Most people who qualify for a class-action settlement never file. They don't know the settlement exists, and
