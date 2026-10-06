@@ -10,6 +10,22 @@ import WhyDrawer from "./WhyDrawer";
 const BANDS: Band[] = ["high", "likely", "possible"];
 const UNDO_MS = 6000;
 
+type SortKey = "best" | "value" | "deadline";
+const SORTS: { key: SortKey; label: string }[] = [
+  { key: "best", label: "Best match" },
+  { key: "value", label: "Highest payout" },
+  { key: "deadline", label: "Ends soonest" },
+];
+
+const payoutOf = (c: Claim) => c.payout_max ?? c.payout_min ?? 0;
+
+// "best" keeps the order the API returned (confidence x payout); the others re-sort inside a band.
+function sortClaims(claims: Claim[], sort: SortKey): Claim[] {
+  if (sort === "value") return [...claims].sort((a, b) => payoutOf(b) - payoutOf(a));
+  if (sort === "deadline") return [...claims].sort((a, b) => a.days_left - b.days_left);
+  return claims;
+}
+
 interface Props {
   result: ScanResult;
   onRestart: () => void;
@@ -20,6 +36,7 @@ export default function Feed({ result, onRestart }: Props) {
   const [confirmed, setConfirmed] = useState<string[]>([]); // Possible cards the user answered Yes to
   const [lastHidden, setLastHidden] = useState<Claim | null>(null);
   const [openId, setOpenId] = useState<string | null>(null);
+  const [sort, setSort] = useState<SortKey>("best");
   const [startedId, setStartedId] = useState<string | null>(null); // claim shown on the detail screen
   const [submitted, setSubmitted] = useState<string[]>([]); // claims taken through the sign step
   const feedScroll = useRef(0);
@@ -91,6 +108,24 @@ export default function Feed({ result, onRestart }: Props) {
                 <span className="text-sm">(estimate, if every maximum payout applied)</span>
               </p>
             )}
+            <div role="group" aria-label="Sort claims" className="mt-4 flex flex-wrap items-center gap-2">
+              <span className="text-sm text-foreground/60">Sort by</span>
+              {SORTS.map((s) => (
+                <button
+                  key={s.key}
+                  type="button"
+                  aria-pressed={sort === s.key}
+                  onClick={() => setSort(s.key)}
+                  className={`rounded-full px-3 py-1 text-sm font-semibold transition-colors ${
+                    sort === s.key
+                      ? "bg-accent text-white"
+                      : "bg-white text-foreground/70 shadow-sm hover:text-foreground"
+                  }`}
+                >
+                  {s.label}
+                </button>
+              ))}
+            </div>
           </>
         ) : (
           <div className="mt-4 rounded-2xl bg-white p-6 text-center shadow-sm">
@@ -102,7 +137,10 @@ export default function Feed({ result, onRestart }: Props) {
       </header>
 
       {BANDS.map((band) => {
-        const claims = visible.filter((c) => bandOf(c) === band);
+        const claims = sortClaims(
+          visible.filter((c) => bandOf(c) === band),
+          sort,
+        );
         if (claims.length === 0) return null;
         return (
           <section key={band} className="mb-6">

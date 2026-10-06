@@ -34,7 +34,8 @@ email that proves it: "Because we found your iPhone 16 Pro 256GB, AppleCare+ ord
 3. **Scanning.** Counts up the real stats from the API: emails read → purchases and notices → claims matched.
 4. **Feed.** Claims grouped into High, Likely and Possible. Each card shows the settlement, a band pill
    (High / Likely / Possible; the numeric score stays behind the scenes for ranking), the reason line, the payout range, the deadline with days left (red when 14 days or fewer), and
-   "Proof needed" / "Notice ID needed" tags.
+   "Proof needed" / "Notice ID needed" tags. A "Sort by" toggle re-orders the cards inside each band:
+   Best match (the default: confidence × payout), Highest payout, or Ends soonest.
 5. **Why this?** A bottom sheet on phones and a centred pop-up on web, with the primary email (sender, subject, date, quoted evidence line),
    supporting emails, the checks that passed or need attention (company, class period, product, state),
    who qualifies, and a link to the settlement source.
