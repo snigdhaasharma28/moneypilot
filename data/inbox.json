@@ -1,0 +1,892 @@
+{
+  "_meta": {
+    "synthetic": true,
+    "description": "Synthetic demo inbox for the Inbox Claim Matcher MVP. Not real emails. Shaped like simplified Gmail API messages. Each email carries a ground-truth label for the eval script.",
+    "persona": {
+      "name": "Priya Shah",
+      "email": "priya.shah@example.com",
+      "city": "San Jose",
+      "state": "CA",
+      "country": "US"
+    },
+    "built_against": "settlements.json snapshot 2026-10-06",
+    "label_fields": {
+      "category": "order | receipt | subscription_started | renewal | payment | account_notice | breach_notice | settlement_notice | trap | noise",
+      "expected_settlement_ids": "settlements this email is evidence for (empty if none)",
+      "expected_band": "band the settlement should land in when this is the strongest evidence; null if it should not match",
+      "acceptable_bands": "bands the eval should accept",
+      "is_trap": "true = must NOT create or support a recommendation"
+    }
+  },
+  "emails": [
+    {
+      "id": "e01",
+      "from_name": "Apple Store",
+      "from_email": "order_acknowledgment@orders.apple.com",
+      "subject": "We're processing your order W1384920577",
+      "date": "2024-09-20T09:14:00-07:00",
+      "body": "Hi Priya,\n\nThanks for your order. We'll let you know when it ships.\n\nOrder Number: W1384920577\nOrdered on: Sep 20, 2024\n\niPhone 16 Pro 256GB Desert Titanium\nQty 1 — $1,099.00\nAppleCare+ for iPhone 16 Pro — $199.00\n\nSubtotal: $1,298.00\nTax: $119.42\nTotal: $1,417.42\n\nShipping to: Priya Shah, 2215 Meridian Ave, San Jose, CA 95125\n\nApple Store",
+      "label": {
+        "category": "order",
+        "expected_settlement_ids": [
+          "apple-siri"
+        ],
+        "expected_band": "high",
+        "acceptable_bands": [
+          "high"
+        ],
+        "is_trap": false,
+        "note": "iPhone 16 Pro bought inside Jun 10 2024 – Mar 29 2025."
+      }
+    },
+    {
+      "id": "e02",
+      "from_name": "Amazon.com",
+      "from_email": "auto-confirm@amazon.com",
+      "subject": "Your Amazon.com order #112-4492017-3381045",
+      "date": "2021-11-26T18:02:00-08:00",
+      "body": "Hello Priya,\n\nThank you for shopping with us. We'll send a confirmation when your item ships.\n\nOrder #112-4492017-3381045\nPlaced on Friday, November 26, 2021\n\nLEVOIT Air Purifier for Home, Core 300, H13 True HEPA Filter, Quiet Cleaner for Bedroom\nSold by: LEVOIT\nQty: 1 — $79.99\n\nOrder Total: $86.99\nArriving: Monday, November 29\n\nAmazon.com",
+      "label": {
+        "category": "order",
+        "expected_settlement_ids": [
+          "levoit-hepa"
+        ],
+        "expected_band": "high",
+        "acceptable_bands": [
+          "high",
+          "likely"
+        ],
+        "is_trap": false,
+        "note": "Merchant is Amazon but brand/product is Levoit Core True HEPA inside Aug 2019 – Aug 2023. Tests brand-in-product matching."
+      }
+    },
+    {
+      "id": "e03",
+      "from_name": "Best Buy",
+      "from_email": "BestBuyInfo@emailinfo.bestbuy.com",
+      "subject": "Thanks for your order! BBY01-806729941355",
+      "date": "2022-03-14T12:41:00-07:00",
+      "body": "Hi Priya, we got your order.\n\nOrder Number: BBY01-806729941355\nOrder Date: 03/14/2022\n\nThinkware - F200PRO Front and Rear 1080p Dash Cam with Super Night Vision\nModel: TW-F200PRO2CH\nQty 1 — $249.99\n\nStore Pickup: Best Buy San Jose, Oakridge\nReady for pickup: Today after 4 PM\n\nOrder Total: $272.86",
+      "label": {
+        "category": "order",
+        "expected_settlement_ids": [
+          "thinkware-dashcam"
+        ],
+        "expected_band": "high",
+        "acceptable_bands": [
+          "high"
+        ],
+        "is_trap": false,
+        "note": "F200PRO bought inside Jan 2019 – Aug 2024, via retailer."
+      }
+    },
+    {
+      "id": "e04",
+      "from_name": "Dr. Squatch",
+      "from_email": "orders@drsquatch.com",
+      "subject": "Order #DS-2384719 confirmed — your soap is on the way",
+      "date": "2023-02-10T07:55:00-08:00",
+      "body": "Hey Priya,\n\nYour order is confirmed and our team is packing it up.\n\nOrder #DS-2384719 (Feb 10, 2023)\n- Pine Tar Bar Soap x2 — $15.98\n- Cedar Citrus Bar Soap x1 — $7.99\n- Natural Deodorant, Fresh Falls x1 — $13.00\n\nSubtotal: $36.97\nShipping: Free\nTotal: $36.97\n\nStay fresh,\nThe Squatch Team",
+      "label": {
+        "category": "order",
+        "expected_settlement_ids": [
+          "dr-squatch-natural"
+        ],
+        "expected_band": "high",
+        "acceptable_bands": [
+          "high"
+        ],
+        "is_trap": false,
+        "note": "4 products inside Nov 2018 – Aug 2026."
+      }
+    },
+    {
+      "id": "e05",
+      "from_name": "Raging Waters Los Angeles",
+      "from_email": "tickets@ragingwaters.com",
+      "subject": "Your Raging Waters tickets — Order RW-55190832",
+      "date": "2023-07-08T20:17:00-07:00",
+      "body": "Thanks for your purchase, Priya!\n\nOrder RW-55190832 — Jul 8, 2023\nRaging Waters Los Angeles, San Dimas\n\nGeneral Admission (Ages 3+) x2 — $99.98\nParking Pass x1 — $25.00\nProcessing Fee — $4.99\n\nOrder Total: $129.97\n\nVisit date: Saturday, July 15, 2023. Show the QR codes below at the gate. Tickets are non-refundable.",
+      "label": {
+        "category": "order",
+        "expected_settlement_ids": [
+          "raging-waters-fee"
+        ],
+        "expected_band": "high",
+        "acceptable_bands": [
+          "high"
+        ],
+        "is_trap": false,
+        "note": "ragingwaters.com purchase with a Processing Fee inside Jun 2020 – Jun 2026."
+      }
+    },
+    {
+      "id": "e06",
+      "from_name": "CVS Pharmacy",
+      "from_email": "CVS@notifications.cvs.com",
+      "subject": "Your CVS.com order has been placed",
+      "date": "2025-08-19T15:30:00-07:00",
+      "body": "Hi Priya,\n\nThanks for ordering on CVS.com. Here is your order summary.\n\nOrder #8830172264\nPlaced: 08/19/2025\n\nCVS Health Ibuprofen 200mg, 100ct — $9.49\nCeraVe Moisturizing Cream 16oz — $18.99\nExtraCare savings: -$3.00\n\nOrder Total: $27.10\nDelivery to: San Jose, CA 95125\n\nTrack your order anytime in the CVS app.",
+      "label": {
+        "category": "order",
+        "expected_settlement_ids": [
+          "cvs-digital-privacy"
+        ],
+        "expected_band": "high",
+        "acceptable_bands": [
+          "high",
+          "likely"
+        ],
+        "is_trap": false,
+        "note": "Used CVS.com before Jul 27 2026."
+      }
+    },
+    {
+      "id": "e07",
+      "from_name": "Amazon.com",
+      "from_email": "return@amazon.com",
+      "subject": "Your return drop off confirmation",
+      "date": "2022-01-12T11:20:00-08:00",
+      "body": "Hello Priya,\n\nWe've received your return drop off at The UPS Store.\n\nItem: Anker USB-C Hub, 7-in-1\nReturn reason: Item defective or doesn't work\nRefund amount: $45.99\n\nYour refund will be issued to your original payment method once we receive the item at our fulfillment center. This usually takes 2-3 weeks.\n\nAmazon.com",
+      "label": {
+        "category": "receipt",
+        "expected_settlement_ids": [
+          "amazon-returns"
+        ],
+        "expected_band": "likely",
+        "acceptable_bands": [
+          "high",
+          "likely"
+        ],
+        "is_trap": false,
+        "note": "Return after Sep 5 2017. Whether the refund was late is not provable from the inbox; e08 shows a 7-week gap."
+      }
+    },
+    {
+      "id": "e08",
+      "from_name": "Amazon.com",
+      "from_email": "return@amazon.com",
+      "subject": "Your refund for Anker USB-C Hub, 7-in-1",
+      "date": "2022-02-28T09:03:00-08:00",
+      "body": "Hello Priya,\n\nWe've issued your refund of $45.99 for Anker USB-C Hub, 7-in-1.\n\nRefund issued to: Visa ending in 4417\nOrder #113-9920381-5532814\n\nThe refund should appear on your statement in 3-5 business days. We apologize for the delay in processing your return.\n\nAmazon.com",
+      "label": {
+        "category": "receipt",
+        "expected_settlement_ids": [
+          "amazon-returns"
+        ],
+        "expected_band": "likely",
+        "acceptable_bands": [
+          "high",
+          "likely"
+        ],
+        "is_trap": false,
+        "note": "Corroborates e07: refund issued ~7 weeks after drop-off, with an apology for the delay."
+      }
+    },
+    {
+      "id": "e09",
+      "from_name": "The Venetian Resort Las Vegas",
+      "from_email": "reservations@venetianlasvegas.com",
+      "subject": "Reservation Confirmed — Confirmation #VEN8841203",
+      "date": "2025-02-03T21:45:00-08:00",
+      "body": "Dear Priya Shah,\n\nThank you for booking directly at venetianlasvegas.com.\n\nConfirmation #: VEN8841203\nArrival: Friday, March 14, 2025\nDeparture: Sunday, March 16, 2025\nRoom: Luxury King Suite, 2 nights\nRate: $289.00 per night + resort fee\n\nEstimated Total: $711.40\nBilling address: 2215 Meridian Ave, San Jose, CA 95125\n\nWe look forward to welcoming you.",
+      "label": {
+        "category": "receipt",
+        "expected_settlement_ids": [
+          "venetian-privacy"
+        ],
+        "expected_band": "high",
+        "acceptable_bands": [
+          "high",
+          "likely"
+        ],
+        "is_trap": false,
+        "note": "Booked on venetianlasvegas.com inside Sep 2024 – Mar 2026, California billing address (state-restricted class)."
+      }
+    },
+    {
+      "id": "e10",
+      "from_name": "Uber Receipts",
+      "from_email": "noreply@uber.com",
+      "subject": "Your Sunday afternoon trip with Uber",
+      "date": "2026-09-27T16:12:00-07:00",
+      "body": "Thanks for riding, Priya.\n\nTotal: $23.84\nSep 27, 2026\n\nTrip fare: $18.20\nBooking fee: $2.95\nTip: $2.69\n\nUberX — 6.1 mi, 17 min\nFrom: 2215 Meridian Ave, San Jose\nTo: Santana Row, San Jose\n\nPaid with Visa ending in 4417",
+      "label": {
+        "category": "receipt",
+        "expected_settlement_ids": [],
+        "expected_band": null,
+        "acceptable_bands": [
+          null
+        ],
+        "is_trap": false,
+        "note": "Real purchase, no open settlement. Should be extracted but unmatched."
+      }
+    },
+    {
+      "id": "e11",
+      "from_name": "DoorDash",
+      "from_email": "no-reply@doordash.com",
+      "subject": "Order Confirmation for Priya from Tacos El Gordo",
+      "date": "2026-08-30T19:40:00-07:00",
+      "body": "Your order from Tacos El Gordo is confirmed.\n\n2x Carne Asada Tacos — $9.00\n1x Horchata (Large) — $4.50\n\nSubtotal: $13.50\nDelivery Fee: $2.99\nService Fee: $2.03\nDasher Tip: $3.00\nTotal: $21.52\n\nEstimated arrival: 7:55 PM",
+      "label": {
+        "category": "receipt",
+        "expected_settlement_ids": [],
+        "expected_band": null,
+        "acceptable_bands": [
+          null
+        ],
+        "is_trap": false,
+        "note": "Real purchase, no open settlement."
+      }
+    },
+    {
+      "id": "e12",
+      "from_name": "Flo",
+      "from_email": "hello@flo.health",
+      "subject": "Welcome to Flo Premium",
+      "date": "2018-04-02T08:10:00-07:00",
+      "body": "Hi Priya,\n\nYour Flo Premium subscription is now active. Thanks for joining!\n\nPlan: Flo Premium, annual — $39.99/year\nBilled through: App Store\nStart date: April 2, 2018\n\nKeep logging your cycle and symptoms every day to get more accurate predictions and personalized insights. You can manage your subscription in your App Store settings.\n\nThe Flo Team",
+      "label": {
+        "category": "subscription_started",
+        "expected_settlement_ids": [
+          "flo-period-tracker"
+        ],
+        "expected_band": "high",
+        "acceptable_bands": [
+          "high",
+          "likely"
+        ],
+        "is_trap": false,
+        "note": "Active Flo user inside Nov 2016 – Feb 2019. Deadline Oct 15 2026 should trigger 'deadline soon'."
+      }
+    },
+    {
+      "id": "e13",
+      "from_name": "TED",
+      "from_email": "noreply@ted.com",
+      "subject": "Welcome to TED — your account is ready",
+      "date": "2022-01-15T10:05:00-08:00",
+      "body": "Hi Priya,\n\nWelcome to TED! Your account is all set.\n\nWith your TED account you can save talks to watch later, get personalized recommendations, and pick up where you left off on ted.com and in the TED app.\n\nStart with a talk picked for you based on the topics you chose: Psychology, Technology, Personal Growth.\n\nIdeas change everything,\nTED",
+      "label": {
+        "category": "subscription_started",
+        "expected_settlement_ids": [
+          "ted-vppa"
+        ],
+        "expected_band": "likely",
+        "acceptable_bands": [
+          "likely",
+          "high"
+        ],
+        "is_trap": false,
+        "note": "Account created inside Oct 2021 – Jul 2026; watching a video not yet shown (e26 and e31 strengthen it)."
+      }
+    },
+    {
+      "id": "e14",
+      "from_name": "Spotify",
+      "from_email": "no-reply@spotify.com",
+      "subject": "Welcome to Spotify Premium",
+      "date": "2024-05-03T13:22:00-07:00",
+      "body": "Hi Priya,\n\nYou're now on Spotify Premium Individual. Enjoy ad-free music, offline listening and unlimited skips.\n\nPlan: Premium Individual — $11.99/month\nNext billing date: June 3, 2024\nPayment: Visa ending in 4417\n\nYou can cancel anytime in your account page.",
+      "label": {
+        "category": "subscription_started",
+        "expected_settlement_ids": [],
+        "expected_band": null,
+        "acceptable_bands": [
+          null
+        ],
+        "is_trap": false,
+        "note": "Subscription with no open settlement in the catalogue."
+      }
+    },
+    {
+      "id": "e15",
+      "from_name": "Dr. Squatch",
+      "from_email": "subscriptions@drsquatch.com",
+      "subject": "Your Squatch subscription ships soon",
+      "date": "2024-06-01T06:30:00-07:00",
+      "body": "Hey Priya,\n\nHeads up — your next subscription box ships in 3 days.\n\nSubscription: Soap Variety Pack (every 3 months)\nIncludes: Pine Tar, Bay Rum, Wood Barrel Bourbon\nRenewal amount: $34.00\nCard on file: Visa ending in 4417\n\nWant to swap a scent or skip this box? Manage your subscription any time before it ships.",
+      "label": {
+        "category": "renewal",
+        "expected_settlement_ids": [
+          "dr-squatch-natural"
+        ],
+        "expected_band": "high",
+        "acceptable_bands": [
+          "high"
+        ],
+        "is_trap": false,
+        "note": "Corroborates e04 (more products, still inside the period)."
+      }
+    },
+    {
+      "id": "e16",
+      "from_name": "Equinox",
+      "from_email": "membership@equinox.com",
+      "subject": "Your Equinox membership payment receipt",
+      "date": "2024-03-01T05:00:00-08:00",
+      "body": "Hi Priya,\n\nThis is your monthly membership receipt.\n\nMembership: All Access, Equinox San Jose\nBilling period: March 1 - March 31, 2024\nMonthly dues: $260.00\nPaid with: Visa ending in 4417\n\nSee you on the floor. Book classes in the Equinox app.",
+      "label": {
+        "category": "trap",
+        "expected_settlement_ids": [],
+        "expected_band": null,
+        "acceptable_bands": [
+          null
+        ],
+        "is_trap": true,
+        "note": "Trap (g): Equinox gym membership (equinox.com). Same name as Equinox, Inc. (Albany nonprofit) but a different company. Must not match equinox-breach."
+      }
+    },
+    {
+      "id": "e17",
+      "from_name": "Netflix",
+      "from_email": "info@account.netflix.com",
+      "subject": "Your Netflix membership has been renewed",
+      "date": "2026-09-14T03:15:00-07:00",
+      "body": "Hi Priya,\n\nThanks for being a member. We've charged your payment method for your Standard plan.\n\nAmount: $17.99\nBilling date: September 14, 2026\nPayment: Visa ending in 4417\n\nYour next billing date is October 14, 2026.",
+      "label": {
+        "category": "renewal",
+        "expected_settlement_ids": [],
+        "expected_band": null,
+        "acceptable_bands": [
+          null
+        ],
+        "is_trap": false,
+        "note": "Streaming renewal, no open settlement in the catalogue."
+      }
+    },
+    {
+      "id": "e18",
+      "from_name": "Apple",
+      "from_email": "no_reply@email.apple.com",
+      "subject": "Your receipt from Apple — iCloud+",
+      "date": "2025-08-02T00:12:00-07:00",
+      "body": "Receipt\n\nApple Account: priya.shah@example.com\nDate: Aug 2, 2025\nOrder ID: MQ8BXK2P9T\n\niCloud+ with 200 GB (Monthly) — Renews Sep 2, 2025 — $2.99\n\nSubtotal: $2.99\nTax: $0.00\nTotal: $2.99\n\nBilled to Visa ending in 4417",
+      "label": {
+        "category": "renewal",
+        "expected_settlement_ids": [],
+        "expected_band": null,
+        "acceptable_bands": [
+          null
+        ],
+        "is_trap": false,
+        "note": "Same company as apple-siri but wrong product and outside the period. Must not support the Siri match on its own."
+      }
+    },
+    {
+      "id": "e19",
+      "from_name": "Verizon",
+      "from_email": "VZWMail@ecrmemail.verizonwireless.com",
+      "subject": "We received your payment",
+      "date": "2026-09-22T10:48:00-07:00",
+      "body": "Hi Priya,\n\nThanks! We received your payment.\n\nAccount ending in: 0021-1\nPayment amount: $85.00\nPayment date: 09/22/2026\nPayment method: Visa ending in 4417\nConfirmation number: 7731994025\n\nYour current balance is $0.00.",
+      "label": {
+        "category": "payment",
+        "expected_settlement_ids": [],
+        "expected_band": null,
+        "acceptable_bands": [
+          null
+        ],
+        "is_trap": false,
+        "note": "Telecom payment, no open settlement in the catalogue."
+      }
+    },
+    {
+      "id": "e20",
+      "from_name": "Chase",
+      "from_email": "no.reply.alerts@chase.com",
+      "subject": "Your credit card payment is scheduled",
+      "date": "2026-09-25T07:02:00-07:00",
+      "body": "Hi Priya,\n\nYou scheduled a payment to your Chase Freedom Unlimited card ending in 8813.\n\nPayment amount: $1,240.55\nPayment date: Sep 28, 2026\nFrom account: Chase Total Checking ending in 2290\n\nIf you didn't schedule this payment, call us at the number on the back of your card.",
+      "label": {
+        "category": "payment",
+        "expected_settlement_ids": [],
+        "expected_band": null,
+        "acceptable_bands": [
+          null
+        ],
+        "is_trap": false,
+        "note": "Bank payment, no open settlement."
+      }
+    },
+    {
+      "id": "e21",
+      "from_name": "United Airlines",
+      "from_email": "receipts@united.com",
+      "subject": "eTicket Itinerary and Receipt for Confirmation K7QW2M",
+      "date": "2026-07-11T14:33:00-07:00",
+      "body": "Thank you for choosing United, Priya.\n\nConfirmation: K7QW2M\nSFO to EWR — Thu, Aug 20, 2026, UA 1543, Economy\nEWR to SFO — Mon, Aug 24, 2026, UA 2280, Economy\n\nFare: $412.09\nTaxes and fees: $58.21\nTotal: $470.30\nPaid with: Visa ending in 4417",
+      "label": {
+        "category": "payment",
+        "expected_settlement_ids": [],
+        "expected_band": null,
+        "acceptable_bands": [
+          null
+        ],
+        "is_trap": false,
+        "note": "Airline purchase, no open settlement in the catalogue."
+      }
+    },
+    {
+      "id": "e22",
+      "from_name": "Autobell Car Wash",
+      "from_email": "washclub@autobell.com",
+      "subject": "Thanks for your Unlimited Wash Club payment",
+      "date": "2024-02-10T08:00:00-08:00",
+      "body": "Hi Priya,\n\nThanks for being an Autobell Unlimited Wash Club member!\n\nPlan: Unlimited Super Clean\nMonthly charge: $29.99\nBilling date: Feb 10, 2024\nCard: Visa ending in 4417\n\nDrive through any Autobell location as often as you like this month.",
+      "label": {
+        "category": "payment",
+        "expected_settlement_ids": [
+          "autobell-breach"
+        ],
+        "expected_band": "possible",
+        "acceptable_bands": [
+          "possible",
+          "likely"
+        ],
+        "is_trap": false,
+        "note": "Customer before the April 2024 incident; breach class needs the notice (e30)."
+      }
+    },
+    {
+      "id": "e23",
+      "from_name": "Equifax",
+      "from_email": "noreply@equifax.com",
+      "subject": "Your dispute results are ready",
+      "date": "2023-05-18T11:26:00-07:00",
+      "body": "Dear Priya Shah,\n\nWe have completed the investigation of the information you disputed on your Equifax credit file.\n\nDisputed item: Hard inquiry — CAPITAL ONE, 02/2023\nYour reason: Not mine / unauthorized\nResult: Inquiries are a factual record of file access. This item has not been changed.\n\nConfirmation #: 3127704419\nYou can view your full results by signing in to myEquifax.",
+      "label": {
+        "category": "account_notice",
+        "expected_settlement_ids": [
+          "equifax-hard-inquiry"
+        ],
+        "expected_band": "likely",
+        "acceptable_bands": [
+          "likely",
+          "high"
+        ],
+        "is_trap": false,
+        "note": "Hard-inquiry dispute inside Aug 2021 – Mar 2026."
+      }
+    },
+    {
+      "id": "e24",
+      "from_name": "MDLIVE",
+      "from_email": "noreply@mdlive.com",
+      "subject": "Your visit summary is ready",
+      "date": "2024-02-11T17:50:00-08:00",
+      "body": "Hi Priya,\n\nThanks for your virtual visit today. Your visit summary and any prescriptions are now available.\n\nTo view them, sign in to your account at patient.mdlive.com and go to My Health > Visit History.\n\nIf you have questions about your care, you can message your provider from the portal.\n\nMDLIVE Patient Support",
+      "label": {
+        "category": "account_notice",
+        "expected_settlement_ids": [
+          "mdlive-privacy"
+        ],
+        "expected_band": "likely",
+        "acceptable_bands": [
+          "likely",
+          "possible"
+        ],
+        "is_trap": false,
+        "note": "Portal use inside May 2023 – Aug 2025; class also requires a Facebook/Google account, which the inbox can't show."
+      }
+    },
+    {
+      "id": "e25",
+      "from_name": "CVS Pharmacy",
+      "from_email": "CVS@notifications.cvs.com",
+      "subject": "Your CVS.com password was changed",
+      "date": "2026-03-04T22:18:00-08:00",
+      "body": "Hi Priya,\n\nThe password for your CVS.com account was changed on 03/04/2026 at 10:17 PM PT.\n\nIf you made this change, no action is needed.\n\nIf you didn't, reset your password right away and contact us. For your security, we never ask for your password by email.",
+      "label": {
+        "category": "account_notice",
+        "expected_settlement_ids": [
+          "cvs-digital-privacy"
+        ],
+        "expected_band": "high",
+        "acceptable_bands": [
+          "high",
+          "likely"
+        ],
+        "is_trap": false,
+        "note": "Corroborates e06 (CVS.com account use before Jul 27 2026)."
+      }
+    },
+    {
+      "id": "e26",
+      "from_name": "TED",
+      "from_email": "recommends@ted.com",
+      "subject": "Your month on TED: 5 talks watched",
+      "date": "2024-10-02T09:00:00-07:00",
+      "body": "Hi Priya,\n\nHere's your September on TED.\n\nTalks watched: 5\nMinutes of ideas: 74\nMost watched topic: Psychology\n\nPick up where you left off: How to make stress your friend (watched 60%).\n\nBecause you watched talks about habits, we think you'll like these next...",
+      "label": {
+        "category": "account_notice",
+        "expected_settlement_ids": [
+          "ted-vppa"
+        ],
+        "expected_band": "high",
+        "acceptable_bands": [
+          "high",
+          "likely"
+        ],
+        "is_trap": false,
+        "note": "Shows a logged-in account watching videos inside the class period."
+      }
+    },
+    {
+      "id": "e27",
+      "from_name": "Lands' End",
+      "from_email": "landsend@em.landsend.com",
+      "subject": "We're updating our Terms of Use and Privacy Policy",
+      "date": "2024-06-12T06:00:00-07:00",
+      "body": "Hi Priya,\n\nWe're writing to let you know that we're updating the Terms of Use and Privacy Policy that apply to your Lands' End account, effective July 15, 2024.\n\nYou don't need to do anything. By continuing to use landsend.com or your account after that date, you accept the updated terms.\n\nThank you for being a Lands' End customer.",
+      "label": {
+        "category": "account_notice",
+        "expected_settlement_ids": [
+          "lands-end-breach"
+        ],
+        "expected_band": "possible",
+        "acceptable_bands": [
+          "possible",
+          "likely"
+        ],
+        "is_trap": false,
+        "note": "Account holder; breach class needs the notice (e28)."
+      }
+    },
+    {
+      "id": "e28",
+      "from_name": "Lands' End",
+      "from_email": "privacy@landsend.com",
+      "subject": "Notice of Data Security Incident",
+      "date": "2025-01-24T10:00:00-08:00",
+      "body": "Dear Priya Shah,\n\nWe are writing to tell you about a data security incident that may have involved some of your personal information.\n\nWhat happened: In December 2024, Lands' End detected unauthorized access to a system that stores customer account information.\n\nWhat information was involved: Your name, email address, mailing address and order history may have been affected.\n\nWhat we are doing: We secured the system and are offering two years of credit monitoring at no cost. Your enrollment code is LE-55T2Q8.",
+      "label": {
+        "category": "breach_notice",
+        "expected_settlement_ids": [
+          "lands-end-breach"
+        ],
+        "expected_band": "high",
+        "acceptable_bands": [
+          "high"
+        ],
+        "is_trap": false,
+        "note": "Direct breach notice for the Dec 2024 incident."
+      }
+    },
+    {
+      "id": "e29",
+      "from_name": "Equinox, Inc.",
+      "from_email": "privacy@equinoxinc.org",
+      "subject": "Notice of Data Security Incident",
+      "date": "2024-08-15T09:30:00-07:00",
+      "body": "Dear Priya Shah,\n\nEquinox, Inc., a nonprofit mental health services provider based in Albany, New York, is writing to inform you of an incident that may affect some of your information.\n\nWhat happened: On or about April 29, 2024, Equinox, Inc. detected suspicious activity on its network and began an investigation with outside specialists.\n\nWhat information was involved: The information may include your name, address and date of birth.\n\nWhat you can do: We encourage you to enroll in the complimentary credit monitoring described below and to review your account statements.",
+      "label": {
+        "category": "breach_notice",
+        "expected_settlement_ids": [
+          "equinox-breach"
+        ],
+        "expected_band": "high",
+        "acceptable_bands": [
+          "high"
+        ],
+        "is_trap": false,
+        "note": "Direct breach notice from Equinox, Inc. (Albany, NY nonprofit), the actual settlement defendant. Synthetic sender domain."
+      }
+    },
+    {
+      "id": "e30",
+      "from_name": "Autobell Car Wash",
+      "from_email": "notice@autobell.com",
+      "subject": "Notice of Data Security Incident",
+      "date": "2024-06-20T12:00:00-07:00",
+      "body": "Dear Priya Shah,\n\nAutobell Car Wash is writing to notify you of a recent cybersecurity incident.\n\nWhat happened: In April 2024, Autobell experienced a cyberattack that affected part of our network. We immediately took steps to contain it and engaged forensic experts.\n\nWhat information was involved: Information related to your Wash Club account, including your name and contact details, may have been accessed.\n\nWhat we are doing: We are offering complimentary credit monitoring and have strengthened our security controls.",
+      "label": {
+        "category": "breach_notice",
+        "expected_settlement_ids": [
+          "autobell-breach"
+        ],
+        "expected_band": "high",
+        "acceptable_bands": [
+          "high"
+        ],
+        "is_trap": false,
+        "note": "Direct breach notice for the April 2024 incident."
+      }
+    },
+    {
+      "id": "e31",
+      "from_name": "TED Settlement Administrator",
+      "from_email": "noreply@tedvppasettlement.com",
+      "subject": "Notice of Class Action Settlement — Sutton v. TED Foundation Inc.",
+      "date": "2026-08-30T08:00:00-07:00",
+      "body": "LEGAL NOTICE\n\nOur records show you may be a member of the settlement class in Sutton v. TED Foundation Inc., Case No. 1:23-cv-09219 (S.D.N.Y.).\n\nIf you had a TED account and watched a pre-recorded video on ted.com or the TED apps between October 19, 2021 and July 14, 2026, you will receive two free months of TED Membership. You may instead claim $5 in cash by October 26, 2026.\n\nYour Claim ID: 48213097\nYour PIN: 5521\n\nFile at www.tedvppasettlement.com",
+      "label": {
+        "category": "settlement_notice",
+        "expected_settlement_ids": [
+          "ted-vppa"
+        ],
+        "expected_band": "high",
+        "acceptable_bands": [
+          "high"
+        ],
+        "is_trap": false,
+        "note": "Direct settlement notice addressed to her, with Claim ID and PIN."
+      }
+    },
+    {
+      "id": "e32",
+      "from_name": "Raging Waters Settlement Administrator",
+      "from_email": "info@ragingwaterssettlement.com",
+      "subject": "Legal Notice: Raging Waters Processing Fee Class Action Settlement",
+      "date": "2026-08-12T09:00:00-07:00",
+      "body": "LEGAL NOTICE OF PROPOSED CLASS ACTION SETTLEMENT\n\nYou are receiving this notice because records show you bought admission tickets on ragingwaters.com between June 1, 2020 and June 22, 2026 and paid a Processing Fee.\n\nYou may be eligible for a payment from the settlement. Your share will be calculated from purchase records.\n\nNotice ID: RWF-7730192\nConfirmation Code: K4P9\n\nSubmit your claim by November 24, 2026 at www.ragingwaterssettlement.com",
+      "label": {
+        "category": "settlement_notice",
+        "expected_settlement_ids": [
+          "raging-waters-fee"
+        ],
+        "expected_band": "high",
+        "acceptable_bands": [
+          "high"
+        ],
+        "is_trap": false,
+        "note": "Direct settlement notice with Notice ID and Confirmation Code."
+      }
+    },
+    {
+      "id": "e33",
+      "from_name": "Priya Shah",
+      "from_email": "priya.shah@example.com",
+      "subject": "Re: amazon refund thing",
+      "date": "2026-09-18T21:04:00-07:00",
+      "body": "Hey Meera!\n\nYes I saw that too — apparently Amazon settled a class action for people whose return refunds were late or missing. I think Anu could claim, she was complaining about that blender refund forever. Not sure if I qualify, I'll check later.\n\nAlso are we still on for Saturday brunch? 11 at Bill's?\n\nP",
+      "label": {
+        "category": "trap",
+        "expected_settlement_ids": [],
+        "expected_band": null,
+        "acceptable_bands": [
+          null
+        ],
+        "is_trap": true,
+        "note": "Trap (a): her own email ABOUT a settlement. Must not count as evidence for amazon-returns."
+      }
+    },
+    {
+      "id": "e34",
+      "from_name": "The Daily Docket",
+      "from_email": "news@dailydocket.news",
+      "subject": "Apple's $250M Siri settlement: who can claim",
+      "date": "2026-09-23T06:15:00-07:00",
+      "body": "Good morning. Here's what's moving in consumer law today.\n\n1. Apple opened claims in its $250 million settlement over Siri features marketed for the iPhone 15 Pro and iPhone 16. Owners who bought between June 2024 and March 2025 can file for about $25 per phone.\n\n2. A new lawsuit targets broadband price hikes.\n\n3. Data breach roundup: five settlements closing this month.\n\nYou're receiving this because you subscribed at dailydocket.news.",
+      "label": {
+        "category": "trap",
+        "expected_settlement_ids": [],
+        "expected_band": null,
+        "acceptable_bands": [
+          null
+        ],
+        "is_trap": true,
+        "note": "Trap (b): news newsletter about a settlement. Not evidence (apple-siri is still matched via e01)."
+      }
+    },
+    {
+      "id": "e35",
+      "from_name": "CVS Settlement Payouts",
+      "from_email": "claims@cvs-settlement-payouts.co",
+      "subject": "URGENT: You are owed $1,250 from the CVS settlement",
+      "date": "2026-10-01T02:47:00-07:00",
+      "body": "FINAL NOTICE\n\nYou have been selected to receive $1,250.00 from the CVS class action settlement. Your payment will be released within 24 hours once you verify your identity.\n\nClick here to confirm your bank account and Social Security number: http://cvs-claim-verify.co/release\n\nFailure to respond today will forfeit your payment.",
+      "label": {
+        "category": "trap",
+        "expected_settlement_ids": [],
+        "expected_band": null,
+        "acceptable_bands": [
+          null
+        ],
+        "is_trap": true,
+        "note": "Trap (c): phishing from a lookalike domain promising money. Must be flagged as false positive."
+      }
+    },
+    {
+      "id": "e36",
+      "from_name": "Kroger",
+      "from_email": "kroger@email.kroger.com",
+      "subject": "This week's Digital Deals are here, Priya",
+      "date": "2026-09-30T05:00:00-07:00",
+      "body": "Fresh savings just landed!\n\nLoad this week's Digital Deals to your card:\n- Kroger Large Eggs, 12ct — $1.99\n- Fresh Atlantic Salmon — $7.99/lb\n- Save $5 when you spend $50 on household items\n\nDownload the app to clip coupons and get fuel points. Prices valid 9/30 - 10/6.\n\nUnsubscribe | Privacy",
+      "label": {
+        "category": "trap",
+        "expected_settlement_ids": [],
+        "expected_band": null,
+        "acceptable_bands": [
+          null
+        ],
+        "is_trap": true,
+        "note": "Trap (d): marketing only from a settlement company (Kroger Rx). No prescription or purchase shown."
+      }
+    },
+    {
+      "id": "e37",
+      "from_name": "Walmart.com",
+      "from_email": "help@walmart.com",
+      "subject": "Thanks for your order #2000124-77351890",
+      "date": "2025-06-14T16:25:00-07:00",
+      "body": "Hi Priya, thanks for your order!\n\nOrder #2000124-77351890 — placed Jun 14, 2025\n\nBestway Steel Pro MAX 12' x 30\" Round Above Ground Pool Set — $129.00\nQty 1\n\nSubtotal: $129.00\nTax: $12.25\nTotal: $141.25\n\nArrives by Tue, Jun 17. Shipping to San Jose, CA 95125.",
+      "label": {
+        "category": "trap",
+        "expected_settlement_ids": [],
+        "expected_band": null,
+        "acceptable_bands": [
+          null
+        ],
+        "is_trap": true,
+        "note": "Trap (e): real Bestway pool purchase but outside the 2008–2024 window, and only 30 inches tall (class needs 48+)."
+      }
+    },
+    {
+      "id": "e38",
+      "from_name": "Venetian Blinds Direct",
+      "from_email": "orders@venetianblindsdirect.com",
+      "subject": "Your Venetian Blinds Direct order is confirmed",
+      "date": "2025-04-09T11:11:00-07:00",
+      "body": "Hi Priya,\n\nThank you for your order! Our team will cut your blinds to size within 5 business days.\n\nOrder VBD-40217\n2x Faux Wood Venetian Blinds, 2 inch slat, White, 35\" x 60\" — $118.00\nCordless lift upgrade — $24.00\n\nTotal: $142.00\n\nQuestions? Reply to this email.",
+      "label": {
+        "category": "trap",
+        "expected_settlement_ids": [],
+        "expected_band": null,
+        "acceptable_bands": [
+          null
+        ],
+        "is_trap": true,
+        "note": "Trap (f): similar name, different company (not The Venetian Resort)."
+      }
+    },
+    {
+      "id": "e39",
+      "from_name": "Chase",
+      "from_email": "no.reply.alerts@chase.com",
+      "subject": "Your one-time code",
+      "date": "2026-10-05T19:30:00-07:00",
+      "body": "Chase: Your one-time code is 482193. Don't share it with anyone. We'll never call or text to ask for this code. It expires in 10 minutes.",
+      "label": {
+        "category": "noise",
+        "expected_settlement_ids": [],
+        "expected_band": null,
+        "acceptable_bands": [
+          null
+        ],
+        "is_trap": false,
+        "note": "OTP noise; pre-filter should drop it."
+      }
+    },
+    {
+      "id": "e40",
+      "from_name": "Rahul Mehta",
+      "from_email": "rahul.mehta@northwindlabs.example",
+      "subject": "Q4 roadmap review — moving to Thursday",
+      "date": "2026-10-02T14:05:00-07:00",
+      "body": "Hi team,\n\nQuick note that the Q4 roadmap review is moving from Wednesday to Thursday at 2pm. Priya, can you bring the updated onboarding funnel numbers and the two options we discussed for the paywall test?\n\nThanks,\nRahul",
+      "label": {
+        "category": "noise",
+        "expected_settlement_ids": [],
+        "expected_band": null,
+        "acceptable_bands": [
+          null
+        ],
+        "is_trap": false,
+        "note": "Work email."
+      }
+    },
+    {
+      "id": "e41",
+      "from_name": "Mom",
+      "from_email": "lata.shah@example.net",
+      "subject": "Diwali plans",
+      "date": "2026-09-29T08:40:00-07:00",
+      "body": "Beta, are you and Arjun coming home for Diwali this year? Masi is visiting from Pune and wants to see you both. Let me know your dates so I can plan the menu. Also call your Nani, she's been asking.\n\nLove,\nMom",
+      "label": {
+        "category": "noise",
+        "expected_settlement_ids": [],
+        "expected_band": null,
+        "acceptable_bands": [
+          null
+        ],
+        "is_trap": false,
+        "note": "Personal email."
+      }
+    },
+    {
+      "id": "e42",
+      "from_name": "LinkedIn Job Alerts",
+      "from_email": "jobalerts-noreply@linkedin.com",
+      "subject": "12 new jobs for Senior Product Manager in San Jose",
+      "date": "2026-10-04T07:00:00-07:00",
+      "body": "Priya, here are new jobs that match your preferences.\n\nSenior Product Manager, Growth — Fintech startup — San Jose, CA (Hybrid)\nProduct Manager II, Payments — San Francisco Bay Area\nGroup Product Manager — Mountain View, CA\n\nSee all 12 jobs.",
+      "label": {
+        "category": "noise",
+        "expected_settlement_ids": [],
+        "expected_band": null,
+        "acceptable_bands": [
+          null
+        ],
+        "is_trap": false,
+        "note": "Job alert newsletter."
+      }
+    },
+    {
+      "id": "e43",
+      "from_name": "Lenny's Newsletter",
+      "from_email": "lenny@substack.com",
+      "subject": "How the best teams run growth experiments",
+      "date": "2026-10-01T05:30:00-07:00",
+      "body": "Hey there,\n\nThis week: a deep dive on how top consumer apps structure growth experiments, from picking the metric to deciding when a test is done. Plus: three paywall tests that moved revenue per user.\n\nRead in app.",
+      "label": {
+        "category": "noise",
+        "expected_settlement_ids": [],
+        "expected_band": null,
+        "acceptable_bands": [
+          null
+        ],
+        "is_trap": false,
+        "note": "Content newsletter."
+      }
+    },
+    {
+      "id": "e44",
+      "from_name": "Google Calendar",
+      "from_email": "calendar-notification@google.com",
+      "subject": "Invitation: Dentist — Dr. Lee @ Thu Oct 15, 2026 9am",
+      "date": "2026-09-20T12:00:00-07:00",
+      "body": "You have been invited to the following event.\n\nDentist — Dr. Lee\nWhen: Thu Oct 15, 2026 9am – 10am (PDT)\nWhere: Willow Glen Dental, San Jose\n\nGoing? Yes - Maybe - No",
+      "label": {
+        "category": "noise",
+        "expected_settlement_ids": [],
+        "expected_band": null,
+        "acceptable_bands": [
+          null
+        ],
+        "is_trap": false,
+        "note": "Calendar invite."
+      }
+    },
+    {
+      "id": "e45",
+      "from_name": "Sephora",
+      "from_email": "beauty@e.sephora.com",
+      "subject": "Savings Event starts now: up to 20% off",
+      "date": "2026-10-03T06:00:00-07:00",
+      "body": "It's here, Priya! Beauty Insiders save up to 20% on everything during the Savings Event.\n\nRouge: 20% off\nVIB: 15% off\nInsider: 10% off\n\nUse code SAVINGNOW at checkout. Ends Oct 13.",
+      "label": {
+        "category": "noise",
+        "expected_settlement_ids": [],
+        "expected_band": null,
+        "acceptable_bands": [
+          null
+        ],
+        "is_trap": false,
+        "note": "Promo from an unrelated brand."
+      }
+    }
+  ]
+}

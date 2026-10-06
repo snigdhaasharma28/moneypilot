@@ -1,0 +1,45 @@
+{
+  "_meta": {
+    "synthetic": false,
+    "description": "Four REAL emails from the builder's own Gmail (Snigdhaa), transcribed from screenshots on 2026-10-06. Personal details redacted for a public repo: full name, email address, street address, card numbers and full order numbers. City/state kept because some settlements are state-restricted.",
+    "use": "Powers the 'Try with real receipts' demo button and a separate real-data eval. Labels are ground truth for scripts/eval.ts only; never send them to Claude or the UI."
+  },
+  "emails": [
+    {
+      "id": "r01",
+      "from_name": "Apple Store",
+      "from_email": "your_order_US@orders.apple.com",
+      "subject": "We're processing your order W16333•••••",
+      "date": "2024-10-19T23:41:00-04:00",
+      "body": "Thank you for your order.\n\nOrder Number: W16333•••••\nOrdered on: Oct 19, 2024\n\nItems for In-Store Pickup\nAvailable Tomorrow. We'll notify you when these items are ready.\n\niPhone 16 Pro 256GB Black Titanium\nPickup Date: Tomorrow\n$1,099.00\nQty 1 — $1,099.00\n\nPickup Store: Apple Columbia, Columbia, MD\n\nBilling and Payment\nBilling Contact: [name redacted]\nBilling Address: [street redacted], Burtonsville, MD, United States\n\nSubtotal: $1,099.00\nEstimated Tax: $65.94\nOrder Total: $1,164.94\n\nProtect Your New iPhone: Add AppleCare+ for unlimited accidental damage protection.",
+      "label": { "category": "order", "expected_settlement_ids": ["apple-siri"], "expected_band": "high", "acceptable_bands": ["high"], "is_trap": false, "note": "REAL. iPhone 16 Pro bought Oct 19, 2024, inside Jun 10, 2024 – Mar 29, 2025." }
+    },
+    {
+      "id": "r02",
+      "from_name": "service@paypal.com",
+      "from_email": "service@paypal.com",
+      "subject": "Fabletics: $59.95 USD",
+      "date": "2025-09-10T06:11:00-04:00",
+      "body": "Hello, [name redacted]\n\nYou authorized $59.95 USD to Fabletics\n\nMerchant: Fabletics\nTransaction date: Sep 9, 2025\nOrder ID: 16757•••••\n\nSubtotal: $59.95\nTotal: $59.95 USD\n\nAuthorized with: CHASE Debit ••••\n\nYou'll see this purchase as pending in your payment status until Fabletics processes it. We'll send you another receipt if the final payment amount is greater than this authorization amount.\n\nNeed some help? Contact Fabletics for questions or issues with this purchase.",
+      "label": { "category": "payment", "expected_settlement_ids": [], "expected_band": null, "acceptable_bands": [null], "is_trap": false, "note": "REAL. Merchant is Fabletics, sender is PayPal (processor). No open Fabletics settlement as of Oct 6, 2026; a tariff-surcharge lawsuit is pending (future 'watchlist')." }
+    },
+    {
+      "id": "r03",
+      "from_name": "Lyft Receipts",
+      "from_email": "no-reply@lyftmail.com",
+      "subject": "Your receipt for rides on June 18",
+      "date": "2025-06-19T18:33:00-04:00",
+      "body": "Your total charges for June 18\n\nJune 18, 2025 1:42 PM — $10.89 Ride fare\nPickup 1:42 PM: [street redacted], Lake Mary, FL\nDrop-off 1:53 PM: [street redacted], Lake Mary, FL\n\nJune 18, 2025 3:11 PM — $9.51 Ride fare\nPickup 3:11 PM: [street redacted], Lake Mary, FL\nDrop-off 3:22 PM: [street redacted], Lake Mary, FL\n\nVisa •••• — $20.40\n\nOne day of rides in a single charge. You were charged $20.40 for all of the rides you took on June 18.\n\n© 2025 Lyft, Inc.",
+      "label": { "category": "receipt", "expected_settlement_ids": [], "expected_band": null, "acceptable_bands": [null], "is_trap": false, "note": "REAL. No open rider settlement for Lyft as of Oct 6, 2026 (recent Lyft settlements cover drivers, not riders)." }
+    },
+    {
+      "id": "r04",
+      "from_name": "WHOOP",
+      "from_email": "no-reply@notifications.whoop.com",
+      "subject": "Thank You For Your Order",
+      "date": "2025-07-31T01:30:00-04:00",
+      "body": "Your order is confirmed\n\nWe're on it. We're getting your WHOOP 5.0 with your Peak membership ready to ship. Your order number is B4871••••.\n\nORDER SUMMARY\nWHOOP Peak 12-Month Extension — $239.00\nWHOOP 5.0 Device — $0.00\nWireless PowerPack — $0.00\nSuperKnit Band — $0.00\nLifetime warranty — $0.00\n5.0 CoreKnit Band — $39.00\n\nSubtotal: $278.00\nShipping: $8.99\nTax: $16.68\nTotal Due: $303.67\n\nCUSTOMER INFORMATION\nShipping address: [name and street redacted], Burtonsville, MD, US\n\nSHIPPING METHOD: Standard Shipping (5-7 Business Days)",
+      "label": { "category": "subscription_started", "expected_settlement_ids": [], "expected_band": null, "acceptable_bands": [null], "is_trap": false, "note": "REAL. 12-month membership. No open WHOOP settlement as of Oct 6, 2026; an auto-renewal class action is pending (future 'watchlist')." }
+    }
+  ]
+}
