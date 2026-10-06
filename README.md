@@ -3,6 +3,144 @@
 Reads an inbox, finds proof of what a person bought or used, matches it to open class-action settlements,
 and shows a ranked feed of claims with the email that proves each one.
 
+## Problem
+
+Most people who qualify for a class-action settlement never file. They don't know the settlement exists, and
+a generic quiz ("Did you buy an air purifier between 2019 and 2023?") asks them to remember purchases from
+years ago. The proof is already sitting in their inbox: order confirmations, renewals, breach notices and
+settlement notices they skimmed and forgot.
+
+MoneyPilot's app has a "For You" tab next to "All". This feature is what fills it: instead of asking, it
+reads the receipts and tells the user which claims are theirs, and why.
+
+## Magic moment
+
+Tap **Scan sample inbox** and, in about 10 to 13 seconds, see a ranked feed where every card names the
+email that proves it: "Because we found your iPhone 16 Pro 256GB, AppleCare+ order from Sep 20, 2024".
+
+| Intro | Feed | Why this? |
+|---|---|---|
+| ![Intro and consent](docs/intro.jpg) | ![Ranked feed](docs/feed.jpg) | ![Why this drawer](docs/why-this.jpg) |
+
+## User flow
+
+1. **Intro and consent.** States what is read (order confirmations, receipts, subscription emails, breach
+   and settlement notices) and what is not (personal threads; nothing is stored). Three entry points: scan
+   the sample inbox, try four real receipts, or paste one email.
+2. **Scanning.** Counts up the real stats from the API: emails read → purchases and notices → claims matched.
+3. **Feed.** Claims grouped into High, Likely and Possible. Each card shows the settlement, a confidence
+   pill, the reason line, the payout range, the deadline with days left (red when 14 days or fewer), and
+   "Proof needed" / "Notice ID needed" tags.
+4. **Why this?** A bottom drawer with the primary email (sender, subject, date, quoted evidence line),
+   supporting emails, the checks that passed or need attention (company, class period, product, state),
+   who qualifies, and a link to the settlement source.
+5. **Act.** "Start claim" opens the official claim site. "Not me" hides the card with an undo. Possible
+   cards ask one Yes/No question built from the eligibility summary; Yes moves the card to Likely.
+
+## Algorithm
+
+```
+prefilter → Claude extraction → match → E×M×T×P score → bands → sort
+```
+
+1. **Prefilter** (`lib/prefilter.ts`, rules only). Keep an email if the sender name or domain matches a
+   settlement company or alias, or the subject/body contains a transaction or notice keyword (receipt,
+   order, renewal, refund, data breach, settlement, account, ...). On the sample inbox this keeps 38 of 45.
+2. **Extract** (`lib/extract.ts`, Claude Haiku 4.5). Batches of 10 in parallel. Per email: `company` (the
+   merchant), `brand`, `product`, `email_type`, `transaction_date`, a quoted `evidence_line`,
+   `billing_state`, and `is_false_positive` with a reason. The JSON is validated with zod, with one retry.
+3. **Match** (`lib/match.ts`, deterministic). Names are normalised (lowercase, strip inc/llc/ltd/.com and
+   punctuation) and compared with each settlement's company, aliases and parent company. Purchases from
+   retailers (Amazon, Best Buy, Walmart) match on the brand in the product line, which is how a Levoit
+   purifier bought on Amazon finds the Levoit settlement.
+4. **Score** (`lib/score.ts`, deterministic). `confidence = E × M × T × P × state`, plus 0.05 per supporting
+   email (max +0.15), capped at 0.99.
+
+   | Factor | Values |
+   |---|---|
+   | **E** email type | settlement notice 1.0, breach notice 0.95, receipt / order / renewal / billing 0.9, account notice 0.7, marketing / other 0.3 |
+   | **M** name match | exact or alias 1.0, parent company 0.8, partial name overlap 0.5 |
+   | **T** timing | inside the class period 1.0, no period on file 0.7, outside 0.2. A settlement notice, or a breach notice for a breach settlement, is 1.0 |
+   | **P** product | covered product named 1.0, settlement has no product list 0.9, product list exists but none found 0.6 |
+   | **State** | settlement is state-restricted: same state 1.0, state unknown 0.7, different state → dropped |
+
+5. **Bands.** High ≥ 0.75, Likely ≥ 0.50, Possible ≥ 0.30, anything lower is hidden and counted in the
+   footer. Claims are grouped by settlement; the strongest email is the primary evidence.
+6. **Sort.** By band, then by confidence × payout midpoint.
+
+Claude only reads and labels emails. Every decision about which settlement an email supports, and how
+strongly, is made by rules a reviewer can read.
+
+If the API key is missing, Claude errors, or the scan takes longer than 20 seconds, the sample scan returns
+a saved good run (`data/results.cached.json`) and the footer tag reads "cached" instead of "live".
+
+## Real vs mocked
+
+| Part | Status |
+|---|---|
+| Settlement catalogue (`data/settlements.json`) | **Real.** 17 open settlements read from openclassactions.com and topclassactions.com on Oct 6, 2026 |
+| Extraction, matching, scoring, bands | **Real.** Runs live on every scan |
+| "Try my real receipts" (`data/real-samples.json`) | **Real.** Four of the builder's own emails, redacted |
+| "Paste an email" | **Real.** Same pipeline on one pasted email |
+| UI and deploy | **Real** |
+| Sample inbox (`data/inbox.json`) | **Mocked.** 45 synthetic emails for a fictional persona, each with a ground-truth label |
+| Inbox connection (Gmail / Outlook OAuth) | **Not built** |
+| Claim filing | **Not built.** "Start claim" links to the official claim site |
+
+## False-positive handling
+
+A wrong claim costs more than a missed one: it wastes the user's time and, if filed, is a false statement.
+There are three layers.
+
+**1. Claude flags emails that are not evidence** (`is_false_positive`), and they are dropped before scoring:
+
+- the person writing *about* a settlement to a friend, rather than receiving a notice
+- news or newsletters reporting on a lawsuit
+- scams: promised money, urgent links, requests for bank or SSN, sender domain that doesn't match the company
+- marketing with no sign of a purchase or account
+- a company that is not the party the person transacted with
+
+**2. Merchant, not processor.** PayPal, Stripe, Apple Pay, Klarna and Afterpay are never the company. A
+PayPal email saying "You authorized $59.95 USD to Fabletics" is extracted as Fabletics.
+
+**3. Deterministic guards in matching and scoring**, which hold even if Claude gets an email wrong:
+
+- **Same name, different company.** Equinox, Inc. (a nonprofit health provider in Albany, NY) has a data
+  breach settlement. Equinox the gym does not. Normalising both names gives "equinox", so the settlement
+  carries `excluded_sender_domains: ["equinox.com"]` and a gym membership receipt can never match it. The
+  real breach notice, from a different domain, scores High.
+- **Similar names.** "Venetian Blinds Direct" only partially overlaps "The Venetian Resort", scores far
+  below the Possible threshold, and is never shown.
+- **Right company, wrong product or date.** An iCloud+ receipt does not support the iPhone settlement; a
+  Bestway pool bought in 2025 falls outside the 2008–2024 window and is hidden.
+- **Supporting emails must stand alone.** An email only adds to a claim if it would score at least Possible
+  by itself and names a covered product when the settlement has a product list.
+
+In the labelled sample inbox, seven trap emails cover these cases; none is used as evidence (see Eval).
+
+## Privacy
+
+**In this MVP**
+
+- No inbox is connected. The sample inbox is synthetic, the real receipts are the builder's own and
+  redacted, and a pasted email is whatever the user chooses to paste.
+- Email text is sent to Anthropic's API for extraction and to nothing else. Bodies are cut to 2,500
+  characters first.
+- Nothing is written to a database or to disk: there is no database, no account and no cookie. Server logs
+  record only an error message when a scan fails, never email content.
+- The prefilter runs before the model, so emails that are plainly noise never leave the server.
+- "Not me" is logged to the browser console only.
+
+**For production**
+
+- Gmail and Outlook OAuth with read-only scope, and a server-side search query restricted to receipt and
+  notice senders and keywords, so personal threads are never fetched.
+- Keep only derived facts (company, product, date, the short evidence line and a message ID to link back),
+  never the email body. Let users delete these and disconnect at any time.
+- A zero-retention agreement with the model provider, encryption at rest for tokens and derived facts, and
+  a security review of the OAuth scopes before launch.
+- Plain-language consent before the first scan, listing what is read and what is kept.
+
 ## Eval
 
 `scripts/eval.ts` runs the full pipeline on each data set and compares the claims with the ground-truth
@@ -39,3 +177,75 @@ How to read these numbers:
   the three real receipts (Fabletics via PayPal, Lyft, WHOOP) that correctly return no claim.
 - Extraction uses a language model, so a rerun can move a borderline email between bands. One run is
   reported here.
+
+## How I'd verify and monitor after launch
+
+None of this is built yet; it is the plan.
+
+**Before widening access**
+
+- Build a held-out labelled set from consenting users' real inboxes (several hundred emails) that nobody
+  tunes against, and run `scripts/eval.ts` on it in CI. Block a release if High precision drops below 90%
+  or any trap email is used as evidence.
+- Have a person review every High claim for the first cohort of users.
+
+**In production**
+
+- **"Not me" rate per settlement and per band.** This is the live false-positive signal; the event is
+  already emitted with `settlement_id` and `confidence`. A settlement with a high rate usually means a bad
+  alias or a name collision.
+- **Calibration.** Of claims shown as High, how many are started, and how many are later paid or rejected.
+- **Possible → Yes rate**, to tune the 0.30 and 0.50 thresholds.
+- **Live vs cached share, scan latency (p50 / p95), extraction retry and failure rate, cost per scan.**
+- **Settlement freshness.** Alert when a deadline has passed or a source page has changed.
+- A weekly sample of dropped and hidden emails, read by a person, to catch missed claims that no user
+  would ever report.
+
+## Known limitations
+
+- **Evidence is not eligibility.** The inbox shows a purchase or an account, not every class condition.
+  It cannot show that a Flo user logged cycle data, that an MDLive user had a Facebook account, or that a
+  pool is 48 inches tall. The drawer shows the full eligibility text so the user makes the final call.
+- **The "up to $X" total is an upper bound.** It sums each settlement's maximum payout, and three breach
+  settlements have a $5,000 maximum that applies only to documented losses.
+- **The settlement list is a snapshot** from Oct 6, 2026. Deadlines and terms will go stale.
+- **Name matching is simple.** Aliases are hand-written, the retailer list is hard-coded, and a new
+  same-name collision needs a manual exclusion like the Equinox one.
+- **State comes only from an address in the email.** With no address, a state-restricted claim is
+  down-weighted, not confirmed.
+- **Model variability.** The same email can occasionally be typed differently between runs, which can move
+  a claim across a band boundary.
+- **The eval set is small and was used for tuning** (see Eval).
+- **The scan endpoint is public** with no rate limit or auth, which is acceptable for a demo only.
+- **English-language, US emails only.** Receipts as PDF attachments or images are not read.
+
+## Future scope
+
+- **Gmail and Outlook OAuth**, read-only, with a server-side query limited to receipts and notices.
+- **Live settlement sync** from the source sites, with a review step before a new settlement goes live.
+- **PDF and image receipts**, since many orders and invoices arrive as attachments.
+- **Lawsuit watchlist.** Track pending cases for companies found in the inbox and notify the user when one
+  settles. The real sample set already has two candidates noted in its labels: Fabletics and WHOOP.
+- **Payout detection.** Spot settlement payment emails to confirm a claim was paid and close the loop on
+  calibration.
+- **Claude judge step.** A second, independent model pass over High claims that reads the email next to the
+  full eligibility text and can downgrade a claim before it is shown.
+- **Assisted filing**: pre-fill the claim form with the Notice ID and details found in the email.
+
+## Run it locally
+
+```bash
+npm install
+```
+
+Put `ANTHROPIC_API_KEY=...` in `.env.local` (see `.env.example`), then:
+
+```bash
+npm run dev
+```
+
+```bash
+npx tsx --env-file=.env.local scripts/run-sample.ts data/inbox.json
+```
+
+Stack: Next.js (App Router, TypeScript), Tailwind CSS, the Anthropic SDK and zod. No database, no auth.
