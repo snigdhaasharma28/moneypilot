@@ -1,9 +1,9 @@
 interface Props {
   error: string | null;
-  onScanSample: () => void;
+  onConnect: () => void;
 }
 
-export default function Intro({ error, onScanSample }: Props) {
+export default function Intro({ error, onConnect }: Props) {
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center gap-6 px-5 py-10">
       <div className="text-center">
@@ -32,10 +32,10 @@ export default function Intro({ error, onScanSample }: Props) {
 
       <button
         type="button"
-        onClick={onScanSample}
+        onClick={onConnect}
         className="w-full rounded-full bg-accent px-6 py-3.5 font-semibold text-white shadow-md transition-opacity hover:opacity-90"
       >
-        Scan inbox
+        Connect Gmail
       </button>
 
       <p className="text-center text-xs text-foreground/55">

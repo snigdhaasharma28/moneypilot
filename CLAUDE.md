@@ -5,13 +5,13 @@ An MVP for MoneyPilot, an app that helps US consumers find and file class-action
 Instead of a generic quiz, we read a user's inbox, find proof of what they bought or used, match it to open
 settlements, and show a ranked feed of claims with the reason for each ("Because we found your Spotify renewal, Mar 12, 2023").
 
-Magic moment: tap "Scan inbox" -> in under 15 seconds see a ranked feed where every card shows the email that proves it.
+Magic moment: tap "Connect Gmail", enter an address -> in under 15 seconds see a ranked feed where every card shows the email that proves it.
 
 Optimise for a clean, working core loop over breadth. When in doubt, cut scope and keep the loop working.
 
 ## Real vs mocked (keep it this way)
 - Real: Claude extraction, matching, confidence scoring, UI, live deploy, settlement data (`data/settlements.json`, 17 real open settlements, snapshot 2026-10-06).
-- Mocked: the inbox (`data/inbox.json`, 45 synthetic labelled emails). No Gmail/Outlook OAuth.
+- Mocked: the inbox (`data/inbox.json`, 45 synthetic labelled emails). No Gmail/Outlook OAuth; the "Connect Gmail" screen is a demo step that always scans the sample inbox.
 - Real emails: `data/real-samples.json` (4 of the builder's own receipts, redacted). Used by the eval and `POST /api/scan { source: "real" }`; there is no button for it in the UI. The iPhone 16 Pro order (Oct 19, 2024) must match `apple-siri` as High; Fabletics, Lyft and WHOOP must return no claim.
 - `POST /api/scan { source: "paste", email }` runs the same pipeline on one email and stores nothing. The paste form was removed from the UI; the API still accepts it.
 
@@ -42,8 +42,8 @@ lib/score.ts               # confidence formula, bands, sort, reason line
 lib/judge.ts               # Claude judge for Likely / Possible claims: product_fit replaces P
 lib/pipeline.ts            # runs prefilter -> extract -> match -> score -> judge -> score
 app/api/scan/route.ts      # POST { source: "sample" } | { source: "real" } | { source: "paste", email }
-app/page.tsx               # stage switch: intro | scanning | feed
-components/                # Header, Intro, Scanning, Feed, ClaimCard, WhyDrawer, ClaimDetail, ClaimSign
+app/page.tsx               # stage switch: intro | connect | scanning | feed
+components/                # Header, Intro, Connect, Scanning, Feed, ClaimCard, WhyDrawer, ClaimDetail, ClaimSign
 scripts/run-sample.ts      # run the pipeline on a data file and print the claims table
 scripts/eval.ts            # precision / recall vs labels (--no-judge to compare)
 scripts/email-tracker.ts   # writes data/email-tracker.csv
@@ -90,14 +90,15 @@ Be strict. Never guess a product, date or state not in the email. Return only JS
 - Header on every screen (`components/Header.tsx`): MoneyPilot wordmark on the left, profile avatar on the right. Both are drawn in code (no logo file, no real account).
 - Headline font: Protest Strike (Google Fonts via next/font). Body: Inter.
 - Accent green #1C7359. Background warm beige #F6F0E6. Cards white, rounded-2xl, soft shadow.
-- Flow: Intro + consent card -> Scanning (animated counts, min 2.5 s) -> Feed (High / Likely / Possible sections) -> "Why this?" drawer -> Start claim / Not me.
+- Flow: Intro + consent card -> Connect Gmail -> Scanning (animated counts, min 2.5 s) -> Feed (High / Likely / Possible sections) -> "Why this?" drawer -> Start claim / Not me.
 - Card: company initial avatar, settlement name, confidence pill (High green, Likely amber, Possible grey; band label only, the % stays in the API for sorting and banding), reason line, payout range, deadline + days left (red badge if deadline_soon), "Proof needed" / "Notice ID needed" tags.
 - Start claim opens an in-app flow (`components/ClaimDetail.tsx`, `components/ClaimSign.tsx`): "Submit Claim" details (hero with payout and deadline, why it matched, who qualifies, payout note, what you'll need) -> "Claim Settlement" -> draw-to-sign screen -> "Claim Submitted!". It is a demo of the filing flow: nothing is filed and the signature is never stored, and the submitted screen says so. The official site (`claim_url`, or `source_url` if null) is only a link inside this flow.
 - Feed header: "{n} claims you likely qualify for" + "up to $X" (sum of payout_max, labelled as an estimate).
 - "Why this?" drawer (bottom sheet on phones, centred pop-up on web; the feed behind it does not scroll while it is open): primary email with the evidence line highlighted, supporting emails, checks (company, class period, product, state, judge reason when present), eligibility summary, link to `source_url`.
 - Possible cards ask one Yes/No question from `eligibility_summary`; Yes moves the card to Likely, No hides it.
 - "Not me" hides the card with undo and logs `{ event: "not_me", settlement_id, confidence }` to the console.
-- Intro has one button, "Scan inbox" (scans the sample inbox; the demo note under it says so).
+- Intro has one button, "Connect Gmail", which opens the connect screen (`components/Connect.tsx`).
+- Connect screen: Gmail address field, list of what will be read, "Connect and scan", then a short "connecting" sequence. It is a demo: no password field, no Google branding or sign-in look-alike, the address stays in the browser (shown on the scanning screen only), and any address scans the sample inbox. The demo note under it says so; keep that note.
 - Footer: "{n} weak matches hidden" + "Settlement data as of Oct 6, 2026 from openclassactions.com and topclassactions.com" + small "live" / "cached" tag.
 
 ## Working rules

@@ -25,11 +25,12 @@ function CountUp({ to, active }: { to: number; active: boolean }) {
 
 interface Props {
   result: ScanResult | null; // null while the scan is still running
+  account: string | null; // address from the connect screen, shown as-is
   onDone: () => void;
 }
 
 // Counts up the three API stats one after another, then hands over to the feed.
-export default function Scanning({ result, onDone }: Props) {
+export default function Scanning({ result, account, onDone }: Props) {
   const [step, setStep] = useState(0);
 
   useEffect(() => {
@@ -50,6 +51,7 @@ export default function Scanning({ result, onDone }: Props) {
       <div className="text-center">
         <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-accent/20 border-t-accent" />
         <h1 className="mt-5 font-display text-4xl text-accent">Scanning your inbox</h1>
+        {account && <p className="mt-1 truncate text-sm font-semibold text-foreground/75">{account}</p>}
         <p className="mt-2 text-sm text-foreground/65" aria-live="polite">
           {result ? "Matching to open settlements…" : "Reading receipts and notices…"}
         </p>

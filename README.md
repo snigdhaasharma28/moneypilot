@@ -17,7 +17,7 @@ reads the receipts and tells the user which claims are theirs, and why.
 
 ## Magic moment
 
-Tap **Scan inbox** and, in about 20 seconds on the live demo (about 11 on a laptop), see a ranked feed where every card names the
+Tap **Connect Gmail**, enter an address and, in about 20 seconds on the live demo (about 11 on a laptop), see a ranked feed where every card names the
 email that proves it: "Because we found your iPhone 16 Pro 256GB, AppleCare+ order from Sep 20, 2024".
 
 | Intro | Feed | Why this? |
@@ -27,16 +27,18 @@ email that proves it: "Because we found your iPhone 16 Pro 256GB, AppleCare+ ord
 ## User flow
 
 1. **Intro and consent.** States what is read (order confirmations, receipts, subscription emails, breach
-   and settlement notices) and what is not (personal threads; nothing is stored). One button, "Scan inbox",
-   runs the scan on the sample inbox.
-2. **Scanning.** Counts up the real stats from the API: emails read → purchases and notices → claims matched.
-3. **Feed.** Claims grouped into High, Likely and Possible. Each card shows the settlement, a band pill
+   and settlement notices) and what is not (personal threads; nothing is stored). One button, "Connect Gmail".
+2. **Connect Gmail (demo).** Asks for a Gmail address, lists what will be read, then plays a short
+   "connecting" sequence. Nothing is connected: no password is asked, the address is never sent to the
+   server, and whatever is entered the scan reads the sample inbox. The note on the screen says so.
+3. **Scanning.** Counts up the real stats from the API: emails read → purchases and notices → claims matched.
+4. **Feed.** Claims grouped into High, Likely and Possible. Each card shows the settlement, a band pill
    (High / Likely / Possible; the numeric score stays behind the scenes for ranking), the reason line, the payout range, the deadline with days left (red when 14 days or fewer), and
    "Proof needed" / "Notice ID needed" tags.
-4. **Why this?** A bottom sheet on phones and a centred pop-up on web, with the primary email (sender, subject, date, quoted evidence line),
+5. **Why this?** A bottom sheet on phones and a centred pop-up on web, with the primary email (sender, subject, date, quoted evidence line),
    supporting emails, the checks that passed or need attention (company, class period, product, state),
    who qualifies, and a link to the settlement source.
-5. **Act.** "Start claim" opens an in-app claim screen with the payout, deadline, why it matched, who
+6. **Act.** "Start claim" opens an in-app claim screen with the payout, deadline, why it matched, who
    qualifies and what is needed. "Claim Settlement" leads to a draw-to-sign step and a "Claim Submitted!"
    screen. This is a demo of the filing flow: nothing is sent and the signature is not stored; the official
    claim site is linked from these screens.
