@@ -3,6 +3,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { runPipeline, toEmail } from "@/lib/pipeline";
 import type { Claim, Email, ScanSource } from "@/lib/types";
+import { toCsv, type Row } from "./csv";
 
 const OUT_PATH = "data/email-tracker.csv";
 const SETS: { name: string; file: string; source: ScanSource }[] = [
@@ -16,7 +17,6 @@ interface Label {
   is_trap: boolean;
 }
 type LabelledEmail = Email & { label: Label };
-type Row = Record<string, string | number | boolean>;
 
 interface Use {
   role: "primary" | "supporting";
@@ -68,17 +68,6 @@ async function rowsFor(set: (typeof SETS)[number]): Promise<Row[]> {
       correct: isCorrect(email.label, uses) ? "yes" : "no",
     };
   });
-}
-
-function csvCell(value: string | number | boolean): string {
-  const text = String(value);
-  return /[",\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
-}
-
-function toCsv(rows: Row[]): string {
-  const columns = Object.keys(rows[0]);
-  const lines = rows.map((row) => columns.map((c) => csvCell(row[c])).join(","));
-  return `${[columns.join(","), ...lines].join("\n")}\n`;
 }
 
 async function main() {

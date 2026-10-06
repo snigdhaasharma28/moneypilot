@@ -190,6 +190,10 @@ a rerun could hide it; that is the main risk the judge adds.
 extracted, and whether each was used as primary proof, supporting proof or not at all. Regenerate it with
 `npx tsx --env-file=.env.local scripts/email-tracker.ts`.
 
+**Settlement tracker.** `data/settlements-tracker.csv` is the 17-settlement catalogue as a spreadsheet
+(company, class period, payout, deadline, proof rules, claim and source links) with how each one did in the
+saved sample scan. Regenerate it with `npx tsx scripts/settlements-tracker.ts`; it needs no API key.
+
 How to read these numbers:
 
 - The synthetic inbox was written against the settlement list, and the matching rules and extraction prompt

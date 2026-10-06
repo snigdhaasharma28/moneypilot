@@ -30,6 +30,7 @@ data/inbox.json            # synthetic inbox with labels (DO NOT EDIT unless ask
 data/real-samples.json     # 4 REAL emails from the builder's Gmail, redacted (Apple, Fabletics, Lyft, WHOOP)
 data/results.cached.json   # saved good sample run, used as fallback (rewrite with run-sample.ts --save)
 data/eval.json             # last eval run (written by scripts/eval.ts)
+data/settlements-tracker.csv  # the settlement catalogue as a spreadsheet, with the saved sample-scan result per settlement
 data/email-tracker.csv     # one row per sample email: label, extraction, how it was used (written by scripts/email-tracker.ts)
 docs/                      # README screenshots (intro, feed, why-this)
 lib/types.ts
@@ -46,6 +47,8 @@ components/                # Header, Intro, Scanning, Feed, ClaimCard, WhyDrawer
 scripts/run-sample.ts      # run the pipeline on a data file and print the claims table
 scripts/eval.ts            # precision / recall vs labels (--no-judge to compare)
 scripts/email-tracker.ts   # writes data/email-tracker.csv
+scripts/settlements-tracker.ts  # writes data/settlements-tracker.csv from settlements.json + results.cached.json (no API call)
+scripts/csv.ts             # CSV writer shared by the two tracker scripts
 ```
 Never send the `label` field of inbox emails to Claude or the UI. It is only for `scripts/eval.ts`.
 
