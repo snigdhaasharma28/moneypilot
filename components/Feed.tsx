@@ -21,6 +21,7 @@ export default function Feed({ result, onRestart }: Props) {
   const [lastHidden, setLastHidden] = useState<Claim | null>(null);
   const [openId, setOpenId] = useState<string | null>(null);
   const [startedId, setStartedId] = useState<string | null>(null); // claim shown on the detail screen
+  const [submitted, setSubmitted] = useState<string[]>([]); // claims taken through the sign step
   const feedScroll = useRef(0);
 
   useEffect(() => {
@@ -58,7 +59,17 @@ export default function Feed({ result, onRestart }: Props) {
   }
 
   const started = visible.find((c) => c.settlement_id === startedId);
-  if (started) return <ClaimDetail claim={started} band={bandOf(started)} onBack={backToFeed} />;
+  if (started) {
+    return (
+      <ClaimDetail
+        claim={started}
+        band={bandOf(started)}
+        submitted={submitted.includes(started.settlement_id)}
+        onBack={backToFeed}
+        onSubmitted={() => setSubmitted((ids) => [...ids, started.settlement_id])}
+      />
+    );
+  }
 
   return (
     <main className="mx-auto w-full max-w-md flex-1 px-4 py-6 md:max-w-3xl md:px-6">
@@ -107,6 +118,7 @@ export default function Feed({ result, onRestart }: Props) {
                   claim={claim}
                   band={band}
                   needsAnswer={band === "possible"}
+                  submitted={submitted.includes(claim.settlement_id)}
                   onStart={() => startClaim(claim)}
                   onWhy={() => setOpenId(claim.settlement_id)}
                   onNotMe={() => notMe(claim)}

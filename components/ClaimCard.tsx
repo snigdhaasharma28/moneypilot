@@ -38,13 +38,14 @@ interface Props {
   claim: Claim;
   band: Band; // may differ from claim.band after the user answers the eligibility question
   needsAnswer: boolean;
+  submitted: boolean;
   onStart: () => void;
   onWhy: () => void;
   onNotMe: () => void;
   onConfirm: () => void;
 }
 
-export default function ClaimCard({ claim, band, needsAnswer, onStart, onWhy, onNotMe, onConfirm }: Props) {
+export default function ClaimCard({ claim, band, needsAnswer, submitted, onStart, onWhy, onNotMe, onConfirm }: Props) {
   return (
     <article className="flex flex-col gap-3 rounded-2xl bg-white p-4 shadow-sm md:gap-4 md:p-6">
       <header className="flex items-start gap-3">
@@ -106,7 +107,7 @@ export default function ClaimCard({ claim, band, needsAnswer, onStart, onWhy, on
           onClick={onStart}
           className="flex-1 rounded-full bg-accent px-4 py-2.5 text-center text-sm font-semibold text-white transition-opacity hover:opacity-90"
         >
-          Start claim
+          {submitted ? "Submitted ✓" : "Start claim"}
         </button>
         <button
           type="button"

@@ -37,7 +37,9 @@ email that proves it: "Because we found your iPhone 16 Pro 256GB, AppleCare+ ord
    supporting emails, the checks that passed or need attention (company, class period, product, state),
    who qualifies, and a link to the settlement source.
 5. **Act.** "Start claim" opens an in-app claim screen with the payout, deadline, why it matched, who
-   qualifies and what is needed; the official claim site opens only from the "Claim Settlement" button there.
+   qualifies and what is needed. "Claim Settlement" leads to a draw-to-sign step and a "Claim Submitted!"
+   screen. This is a demo of the filing flow: nothing is sent and the signature is not stored; the official
+   claim site is linked from these screens.
    "Not me" hides the card with an undo. Possible
    cards ask one Yes/No question built from the eligibility summary; Yes moves the card to Likely.
 
@@ -94,7 +96,7 @@ a saved good run (`data/results.cached.json`) and the footer tag reads "cached" 
 | UI and deploy | **Real** |
 | Sample inbox (`data/inbox.json`) | **Mocked.** 45 synthetic emails for a fictional persona, each with a ground-truth label |
 | Inbox connection (Gmail / Outlook OAuth) | **Not built** |
-| Claim filing | **Not built.** The claim screen links out to the official claim site |
+| Claim filing | **Mocked.** The details → sign → submitted screens are a demo; nothing is sent, and the official claim site is linked |
 
 ## False-positive handling
 

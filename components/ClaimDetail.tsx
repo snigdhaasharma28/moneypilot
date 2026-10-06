@@ -1,6 +1,10 @@
+"use client";
+
+import { useState } from "react";
 import { daysLeftLabel, formatDate, payoutRange } from "@/lib/format";
 import type { Band, Claim } from "@/lib/types";
 import { BAND_LABEL } from "./ClaimCard";
+import { ClaimSign, ClaimSubmitted } from "./ClaimSign";
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -24,11 +28,21 @@ function HeroStat({ label, value, note }: { label: string; value: string; note?:
 interface Props {
   claim: Claim;
   band: Band;
+  submitted: boolean;
   onBack: () => void;
+  onSubmitted: () => void;
 }
 
-// In-app claim screen opened by "Start claim". The official site only opens from the button here.
-export default function ClaimDetail({ claim, band, onBack }: Props) {
+// In-app claim flow opened by "Start claim": details -> sign -> submitted.
+// Nothing is filed in this MVP; the official site is only linked from here.
+export default function ClaimDetail({ claim, band, submitted, onBack, onSubmitted }: Props) {
+  const [signing, setSigning] = useState(false);
+
+  if (submitted) return <ClaimSubmitted claim={claim} onBack={onBack} />;
+  if (signing) {
+    return <ClaimSign claim={claim} onBack={() => setSigning(false)} onSubmit={onSubmitted} />;
+  }
+
   const needs = [
     claim.proof_required ? "Proof of purchase" : "No proof of purchase needed",
     claim.notice_id_required ? "The Notice ID (and PIN or code) from your notice email" : null,
@@ -102,16 +116,21 @@ export default function ClaimDetail({ claim, band, onBack }: Props) {
       </Section>
 
       <div className="sticky bottom-0 -mx-4 mt-auto border-t border-foreground/10 bg-background px-4 py-3 md:-mx-6 md:px-6">
-        <a
-          href={claim.claim_url ?? claim.source_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block rounded-2xl bg-accent px-6 py-3.5 text-center font-semibold text-white shadow-md transition-opacity hover:opacity-90"
+        <button
+          type="button"
+          onClick={() => {
+            setSigning(true);
+            window.scrollTo(0, 0);
+          }}
+          className="block w-full rounded-2xl bg-accent px-6 py-3.5 text-center font-semibold text-white shadow-md transition-opacity hover:opacity-90"
         >
           Claim Settlement
-        </a>
+        </button>
         <p className="mt-2 text-center text-xs text-foreground/55">
-          Opens the official settlement site in a new tab ·{" "}
+          <a href={claim.claim_url ?? claim.source_url} target="_blank" rel="noopener noreferrer" className="underline">
+            Official settlement site
+          </a>{" "}
+          ·{" "}
           <a href={claim.source_url} target="_blank" rel="noopener noreferrer" className="underline">
             settlement source
           </a>
