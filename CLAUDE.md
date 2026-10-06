@@ -87,7 +87,7 @@ Be strict. Never guess a product, date or state not in the email. Return only JS
 - Accent green #1C7359. Background warm beige #F6F0E6. Cards white, rounded-2xl, soft shadow.
 - Flow: Intro + consent card -> Scanning (animated counts, min 2.5 s) -> Feed (High / Likely / Possible sections) -> "Why this?" drawer -> Start claim / Not me.
 - Card: company initial avatar, settlement name, confidence pill (High green, Likely amber, Possible grey; band label only, the % stays in the API for sorting and banding), reason line, payout range, deadline + days left (red badge if deadline_soon), "Proof needed" / "Notice ID needed" tags.
-- Start claim opens `claim_url`, or `source_url` if claim_url is null.
+- Start claim opens an in-app "Submit Claim" screen (`components/ClaimDetail.tsx`): hero with payout and deadline, why it matched, who qualifies, payout note, what you'll need. Only its "Claim Settlement" button opens `claim_url` (or `source_url` if claim_url is null) in a new tab.
 - Feed header: "{n} claims you likely qualify for" + "up to $X" (sum of payout_max, labelled as an estimate).
 - "Why this?" drawer: primary email with the evidence line highlighted, supporting emails, checks (company, class period, product, state, judge reason when present), eligibility summary, link to `source_url`.
 - Possible cards ask one Yes/No question from `eligibility_summary`; Yes moves the card to Likely, No hides it.

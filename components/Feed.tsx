@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { formatDate, formatMoney, plural } from "@/lib/format";
 import type { Band, Claim, ScanResult } from "@/lib/types";
 import ClaimCard, { BAND_LABEL } from "./ClaimCard";
+import ClaimDetail from "./ClaimDetail";
 import WhyDrawer from "./WhyDrawer";
 
 const BANDS: Band[] = ["high", "likely", "possible"];
@@ -19,6 +20,8 @@ export default function Feed({ result, onRestart }: Props) {
   const [confirmed, setConfirmed] = useState<string[]>([]); // Possible cards the user answered Yes to
   const [lastHidden, setLastHidden] = useState<Claim | null>(null);
   const [openId, setOpenId] = useState<string | null>(null);
+  const [startedId, setStartedId] = useState<string | null>(null); // claim shown on the detail screen
+  const feedScroll = useRef(0);
 
   useEffect(() => {
     if (!lastHidden) return;
@@ -38,10 +41,24 @@ export default function Feed({ result, onRestart }: Props) {
     setLastHidden(claim);
   }
 
+  function startClaim(claim: Claim) {
+    feedScroll.current = window.scrollY;
+    setStartedId(claim.settlement_id);
+    window.scrollTo(0, 0);
+  }
+
+  function backToFeed() {
+    setStartedId(null);
+    requestAnimationFrame(() => window.scrollTo(0, feedScroll.current));
+  }
+
   function undo(claim: Claim) {
     setHidden((ids) => ids.filter((id) => id !== claim.settlement_id));
     setLastHidden(null);
   }
+
+  const started = visible.find((c) => c.settlement_id === startedId);
+  if (started) return <ClaimDetail claim={started} band={bandOf(started)} onBack={backToFeed} />;
 
   return (
     <main className="mx-auto w-full max-w-md flex-1 px-4 py-6 md:max-w-3xl md:px-6">
@@ -90,6 +107,7 @@ export default function Feed({ result, onRestart }: Props) {
                   claim={claim}
                   band={band}
                   needsAnswer={band === "possible"}
+                  onStart={() => startClaim(claim)}
                   onWhy={() => setOpenId(claim.settlement_id)}
                   onNotMe={() => notMe(claim)}
                   onConfirm={() => setConfirmed((ids) => [...ids, claim.settlement_id])}

@@ -36,7 +36,9 @@ email that proves it: "Because we found your iPhone 16 Pro 256GB, AppleCare+ ord
 4. **Why this?** A bottom drawer with the primary email (sender, subject, date, quoted evidence line),
    supporting emails, the checks that passed or need attention (company, class period, product, state),
    who qualifies, and a link to the settlement source.
-5. **Act.** "Start claim" opens the official claim site. "Not me" hides the card with an undo. Possible
+5. **Act.** "Start claim" opens an in-app claim screen with the payout, deadline, why it matched, who
+   qualifies and what is needed; the official claim site opens only from the "Claim Settlement" button there.
+   "Not me" hides the card with an undo. Possible
    cards ask one Yes/No question built from the eligibility summary; Yes moves the card to Likely.
 
 ## Algorithm
@@ -92,7 +94,7 @@ a saved good run (`data/results.cached.json`) and the footer tag reads "cached" 
 | UI and deploy | **Real** |
 | Sample inbox (`data/inbox.json`) | **Mocked.** 45 synthetic emails for a fictional persona, each with a ground-truth label |
 | Inbox connection (Gmail / Outlook OAuth) | **Not built** |
-| Claim filing | **Not built.** "Start claim" links to the official claim site |
+| Claim filing | **Not built.** The claim screen links out to the official claim site |
 
 ## False-positive handling
 
