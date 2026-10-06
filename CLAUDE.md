@@ -84,7 +84,7 @@ Be strict. Never guess a product, date or state not in the email. Return only JS
 
 ## Working rules
 - Keep the API key only in `.env.local` (local) and Vercel env vars. Never print it, never commit it. `.env*` stays in `.gitignore`.
-- After each working stage: run `npm run build`, fix errors, then commit with a clear message and push.
+- After each working stage: run `npm run build`, fix errors, and check it on localhost (`npm run dev`). Commit locally with a clear message. Push only once a substantial amount of work is done, not after every stage (each push to `main` deploys).
 - Keep functions small and readable; this repo will be read by reviewers.
 - Do not rewrite working code unless asked. Prefer small diffs.
 - Today's date for deadline maths: use the real current date.
