@@ -40,7 +40,7 @@ email that proves it: "Because we found your iPhone 16 Pro 256GB, AppleCare+ ord
 ## Algorithm
 
 ```
-prefilter → Claude extraction → match → E×M×T×P score → bands → sort
+prefilter → Claude extraction → match → E×M×T×P score → Claude judge (Likely / Possible) → re-score → bands → sort
 ```
 
 1. **Prefilter** (`lib/prefilter.ts`, rules only). Keep an email if the sender name or domain matches a
@@ -64,12 +64,17 @@ prefilter → Claude extraction → match → E×M×T×P score → bands → sor
    | **P** product | covered product named 1.0, settlement has no product list 0.9, product list exists but none found 0.6 |
    | **State** | settlement is state-restricted: same state 1.0, state unknown 0.7, different state → dropped |
 
-5. **Bands.** High ≥ 0.75, Likely ≥ 0.50, Possible ≥ 0.30, anything lower is hidden and counted in the
+5. **Judge** (`lib/judge.ts`, Claude Haiku 4.5). Only claims that land in Likely or Possible get a second
+   look. Claude receives the extracted email facts (not the body) and the settlement's eligibility text and
+   returns `product_fit` (0–1), `own_transaction` (true/false) and a short reason. `product_fit` replaces
+   **P** and the formula scores the claim again; `own_transaction = false` drops the email like any other
+   false positive. High claims are never judged, and if the judge call fails the formula score stands.
+6. **Bands.** High ≥ 0.75, Likely ≥ 0.50, Possible ≥ 0.30, anything lower is hidden and counted in the
    footer. Claims are grouped by settlement; the strongest email is the primary evidence.
-6. **Sort.** By band, then by confidence × payout midpoint.
+7. **Sort.** By band, then by confidence × payout midpoint.
 
-Claude only reads and labels emails. Every decision about which settlement an email supports, and how
-strongly, is made by rules a reviewer can read.
+Claude reads and labels emails, and gives one input (product fit) on borderline claims. Which settlement an
+email supports, and the final score and band, always come from rules a reviewer can read.
 
 If the API key is missing, Claude errors, or the scan takes longer than 20 seconds, the sample scan returns
 a saved good run (`data/results.cached.json`) and the footer tag reads "cached" instead of "live".
@@ -161,13 +166,19 @@ Results from the run on Oct 6, 2026 (model `claude-haiku-4-5-20251001`, saved in
 |---|---|---|
 | Claims shown | 15 | 1 |
 | High: shown / correct / precision | 13 / 13 / 100% | 1 / 1 / 100% |
-| Likely: shown / correct / precision | 2 / 2 / 100% | 0 / 0 / n/a |
-| Possible: shown / correct / precision | 0 / 0 / n/a | 0 / 0 / n/a |
+| Likely: shown / correct / precision | 1 / 1 / 100% | 0 / 0 / n/a |
+| Possible: shown / correct / precision | 1 / 1 / 100% | 0 / 0 / n/a |
 | Recall | 15 / 15 (100%) | 1 / 1 (100%) |
 | Traps used as evidence | 0 | 0 |
 | Missed settlements | none | none |
 
 Targets: high precision ≥ 90%, recall ≥ 80%, traps = 0. All met.
+
+**Effect of the judge step** (same day, `--no-judge` vs default). Precision, recall and traps are unchanged.
+The judge reviewed the two Likely claims: Equifax stayed Likely (product fit 1.0, 0.70), and MDLive moved
+from Likely (0.63) to Possible (0.35) because the email shows a visit but not the portal sign-in the class
+requires. Its label accepts either band. At 0.35 it sits close to the 0.30 cut-off, so a stricter verdict on
+a rerun could hide it; that is the main risk the judge adds.
 
 How to read these numbers:
 
@@ -228,8 +239,8 @@ None of this is built yet; it is the plan.
   settles. The real sample set already has two candidates noted in its labels: Fabletics and WHOOP.
 - **Payout detection.** Spot settlement payment emails to confirm a claim was paid and close the loop on
   calibration.
-- **Claude judge step.** A second, independent model pass over High claims that reads the email next to the
-  full eligibility text and can downgrade a claim before it is shown.
+- **Judge on High claims too**, reading the full email next to the eligibility text, once there is a
+  held-out set large enough to show it helps.
 - **Assisted filing**: pre-fill the claim form with the Notice ID and details found in the email.
 
 ## Run it locally

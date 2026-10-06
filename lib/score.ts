@@ -81,11 +81,12 @@ function stateCheck(m: Match): StateCheck {
   return m.extraction.billing_state === required ? "match" : "mismatch";
 }
 
-export function scoreMatch(m: Match): ScoredMatch | null {
+// `productFit` is the judge's 0-1 score; when given it replaces the keyword-based P.
+export function scoreMatch(m: Match, productFit?: number): ScoredMatch | null {
   const state = stateCheck(m);
   if (state === "mismatch") return null; // wrong state: not in the class
   const score =
-    E[m.extraction.email_type] * M[m.kind] * T[periodCheck(m)] * P[productCheck(m)] * STATE[state];
+    E[m.extraction.email_type] * M[m.kind] * T[periodCheck(m)] * (productFit ?? P[productCheck(m)]) * STATE[state];
   return { ...m, score };
 }
 
@@ -181,6 +182,7 @@ function toClaim(group: ScoredMatch[], today: Date): Claim | null {
     band,
     confidence: round2(confidence),
     reason: reasonLine(primary),
+    judge: primary.judge ?? null,
     checks: {
       company: primary.kind,
       period: periodCheck(primary),

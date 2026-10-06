@@ -2,6 +2,7 @@ import inboxFile from "@/data/inbox.json";
 import realSamplesFile from "@/data/real-samples.json";
 import settlementsFile from "@/data/settlements.json";
 import { extractAll } from "./extract";
+import { judgeMatches } from "./judge";
 import { matchEmail } from "./match";
 import { prefilter } from "./prefilter";
 import { buildClaims, scoreMatch } from "./score";
@@ -51,8 +52,25 @@ function scoreEmails(emails: Email[], extractions: Extraction[]): ScoredMatch[] 
     const extraction = byId.get(email.id);
     if (!extraction || extraction.is_false_positive) return [];
     return matchEmail(email, extraction, settlements)
-      .map(scoreMatch)
+      .map((m) => scoreMatch(m))
       .filter((m): m is ScoredMatch => m !== null);
+  });
+}
+
+// Judge the primary evidence of Likely / Possible claims, then let the formula re-score them.
+async function applyJudge(scored: ScoredMatch[], today: Date): Promise<ScoredMatch[]> {
+  const borderline = buildClaims(scored, today).claims.filter((c) => c.band !== "high");
+  const primaries = scored.filter((m) =>
+    borderline.some((c) => c.settlement_id === m.settlement.id && c.primary.email_id === m.email.id),
+  );
+  const verdicts = await judgeMatches(primaries);
+
+  return scored.flatMap((m) => {
+    const verdict = primaries.includes(m) ? verdicts.get(m.settlement.id) : undefined;
+    if (!verdict) return [m];
+    if (!verdict.own_transaction) return []; // same treatment as is_false_positive
+    const rescored = scoreMatch(m, verdict.product_fit);
+    return rescored ? [{ ...rescored, judge: verdict }] : [];
   });
 }
 
@@ -60,11 +78,17 @@ function isPurchaseOrNotice(x: Extraction): boolean {
   return !x.is_false_positive && x.email_type !== "marketing" && x.email_type !== "other";
 }
 
-// prefilter -> extract -> match -> score. `trace` is for scripts only, never for the UI.
-export async function runPipeline(emails: Email[], source: ScanSource, today = new Date()) {
+// prefilter -> extract -> match -> score -> judge borderline claims -> score. `trace` is for scripts only, never for the UI.
+export async function runPipeline(
+  emails: Email[],
+  source: ScanSource,
+  { today = new Date(), judge = true }: { today?: Date; judge?: boolean } = {},
+) {
   const kept = prefilter(emails, settlements);
   const extractions = await extractAll(kept);
-  const { claims, hidden_count } = buildClaims(scoreEmails(kept, extractions), today);
+  const formulaScored = scoreEmails(kept, extractions);
+  const scored = judge ? await applyJudge(formulaScored, today) : formulaScored;
+  const { claims, hidden_count } = buildClaims(scored, today);
 
   const result: ScanResult = {
     mode: "live",

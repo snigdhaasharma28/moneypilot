@@ -1,5 +1,5 @@
 // Precision / recall of the pipeline against each email's ground-truth label.
-// Usage: npx tsx --env-file=.env.local scripts/eval.ts
+// Usage: npx tsx --env-file=.env.local scripts/eval.ts [--no-judge]
 import { readFileSync, writeFileSync } from "node:fs";
 import { runPipeline, toEmail } from "@/lib/pipeline";
 import type { Band, Claim, Email, ScanSource } from "@/lib/types";
@@ -79,13 +79,21 @@ function print(name: string, report: ReturnType<typeof evaluate>) {
 }
 
 async function main() {
+  const judge = !process.argv.includes("--no-judge");
+  console.log(`Judge step: ${judge ? "on" : "off"}`);
   const results: Record<string, ReturnType<typeof evaluate>> = {};
   for (const set of SETS) {
     const emails: LabelledEmail[] = JSON.parse(readFileSync(set.file, "utf8")).emails;
-    const { result } = await runPipeline(emails.map(toEmail), set.source);
+    const { result } = await runPipeline(emails.map(toEmail), set.source, { judge });
     results[set.name] = evaluate(result.claims, emails);
     print(set.name, results[set.name]);
+    console.table(
+      result.claims
+        .filter((c) => c.judge)
+        .map((c) => ({ settlement: c.settlement_id, band: c.band, confidence: c.confidence, ...c.judge })),
+    );
   }
+  if (!judge) return; // the saved eval is always the shipped configuration
   const output = { generated_at: new Date().toISOString(), model: "claude-haiku-4-5-20251001", ...results };
   writeFileSync(OUT_PATH, `${JSON.stringify(output, null, 2)}\n`);
   console.log(`\nSaved to ${OUT_PATH}`);

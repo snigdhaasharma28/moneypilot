@@ -80,8 +80,16 @@ export interface Match {
   kind: MatchKind;
 }
 
+// The judge's second opinion on a borderline claim's primary evidence.
+export interface JudgeVerdict {
+  product_fit: number;
+  own_transaction: boolean;
+  reason: string;
+}
+
 export interface ScoredMatch extends Match {
   score: number;
+  judge?: JudgeVerdict;
 }
 
 export type Band = "high" | "likely" | "possible";
@@ -132,6 +140,7 @@ export interface Claim {
   confidence: number;
   reason: string;
   checks: ClaimChecks;
+  judge: JudgeVerdict | null; // set when the judge reviewed this claim (Likely / Possible only)
   primary: Evidence;
   supporting: Evidence[];
 }

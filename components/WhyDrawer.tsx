@@ -37,6 +37,9 @@ function buildChecks(c: Claim): Check[] {
     not_found: { ok: false, text: "Covered product not found in the email" },
   };
   const list = [company[checks.company], period[checks.period], product[checks.product]];
+  if (c.judge) {
+    list.push({ ok: c.judge.product_fit >= 0.6, text: `Eligibility review: ${c.judge.reason}` });
+  }
   if (checks.state === "match") list.push({ ok: true, text: `Address in ${c.state_restriction} shown in the email` });
   if (checks.state === "unknown") {
     list.push({ ok: false, text: `Needs a ${c.state_restriction} address, none shown in the email` });

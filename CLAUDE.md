@@ -34,7 +34,8 @@ lib/prefilter.ts           # rules: keep transaction / notice emails, drop noise
 lib/extract.ts             # Claude extraction (batches of 10, parallel)
 lib/match.ts               # email facts -> candidate settlements
 lib/score.ts               # confidence formula, bands, sort, reason line
-lib/pipeline.ts            # runs prefilter -> extract -> match -> score
+lib/judge.ts               # Claude judge for Likely / Possible claims: product_fit replaces P
+lib/pipeline.ts            # runs prefilter -> extract -> match -> score -> judge -> score
 app/api/scan/route.ts      # POST { source: "sample" } | { source: "real" } | { source: "paste", email }
 app/page.tsx               # the whole UI flow (split into components/ as needed)
 scripts/eval.ts            # precision / recall vs labels

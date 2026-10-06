@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-06T15:01:44.901Z",
+  "generated_at": "2026-10-06T15:07:06.579Z",
   "model": "claude-haiku-4-5-20251001",
   "inbox": {
     "emails": 45,
@@ -14,16 +14,16 @@
       },
       {
         "band": "likely",
-        "shown": 2,
-        "correct": 2,
+        "shown": 1,
+        "correct": 1,
         "precision": 100,
         "wrong": []
       },
       {
         "band": "possible",
-        "shown": 0,
-        "correct": 0,
-        "precision": null,
+        "shown": 1,
+        "correct": 1,
+        "precision": 100,
         "wrong": []
       }
     ],

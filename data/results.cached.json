@@ -1,7 +1,7 @@
 {
   "mode": "live",
   "source": "sample",
-  "scanned_at": "2026-10-06T14:52:51.978Z",
+  "scanned_at": "2026-10-06T15:07:25.636Z",
   "snapshot_date": "2026-10-06",
   "stats": {
     "total_emails": 45,
@@ -31,6 +31,7 @@
       "band": "high",
       "confidence": 0.91,
       "reason": "Because we found your Lands' End data breach notice from Jan 24, 2025",
+      "judge": null,
       "checks": {
         "company": "exact",
         "period": "notice",
@@ -81,6 +82,7 @@
       "band": "high",
       "confidence": 0.91,
       "reason": "Because we found your Autobell Car Wash data breach notice from Jun 20, 2024",
+      "judge": null,
       "checks": {
         "company": "exact",
         "period": "notice",
@@ -131,6 +133,7 @@
       "band": "high",
       "confidence": 0.86,
       "reason": "Because we found your Equinox, Inc. data breach notice from Aug 15, 2024",
+      "judge": null,
       "checks": {
         "company": "exact",
         "period": "notice",
@@ -170,6 +173,7 @@
       "band": "high",
       "confidence": 0.9,
       "reason": "Because we found your iPhone 16 Pro 256GB, AppleCare+ order from Sep 20, 2024",
+      "judge": null,
       "checks": {
         "company": "exact",
         "period": "inside",
@@ -209,6 +213,7 @@
       "band": "high",
       "confidence": 0.9,
       "reason": "Because we found your Hotel Room Reservation, Luxury King Suite order from Feb 3, 2025",
+      "judge": null,
       "checks": {
         "company": "exact",
         "period": "inside",
@@ -248,6 +253,7 @@
       "band": "high",
       "confidence": 0.99,
       "reason": "Because we found your Raging Waters settlement notice from Aug 12, 2026",
+      "judge": null,
       "checks": {
         "company": "exact",
         "period": "notice",
@@ -298,6 +304,7 @@
       "band": "high",
       "confidence": 0.95,
       "reason": "Because we found your USB-C Hub, 7-in-1 receipt from Jan 12, 2022",
+      "judge": null,
       "checks": {
         "company": "exact",
         "period": "inside",
@@ -348,6 +355,7 @@
       "band": "high",
       "confidence": 0.81,
       "reason": "Because we found your Flo Premium subscription payment from Apr 2, 2018",
+      "judge": null,
       "checks": {
         "company": "exact",
         "period": "inside",
@@ -387,6 +395,7 @@
       "band": "high",
       "confidence": 0.9,
       "reason": "Because we found your Air Purifier Core 300 H13 True HEPA order from Nov 26, 2021",
+      "judge": null,
       "checks": {
         "company": "exact",
         "period": "inside",
@@ -426,6 +435,7 @@
       "band": "high",
       "confidence": 0.99,
       "reason": "Because we found your TED Foundation Inc. settlement notice from Aug 30, 2026",
+      "judge": null,
       "checks": {
         "company": "exact",
         "period": "notice",
@@ -486,6 +496,7 @@
       "band": "high",
       "confidence": 0.86,
       "reason": "Because we found your Bar Soap, Natural Deodorant order from Feb 10, 2023",
+      "judge": null,
       "checks": {
         "company": "exact",
         "period": "inside",
@@ -536,6 +547,7 @@
       "band": "high",
       "confidence": 0.86,
       "reason": "Because we found your Ibuprofen 200mg, Moisturizing Cream order from Aug 19, 2025",
+      "judge": null,
       "checks": {
         "company": "exact",
         "period": "inside",
@@ -586,6 +598,7 @@
       "band": "high",
       "confidence": 0.9,
       "reason": "Because we found your F200PRO Front and Rear Dash Cam order from Mar 14, 2022",
+      "judge": null,
       "checks": {
         "company": "exact",
         "period": "inside",
@@ -625,6 +638,11 @@
       "band": "likely",
       "confidence": 0.7,
       "reason": "Because we found your Credit file dispute investigation account email from May 18, 2023",
+      "judge": {
+        "product_fit": 1,
+        "own_transaction": true,
+        "reason": "Email confirms person disputed hard inquiries with Equifax; matches settlement eligibility."
+      },
       "checks": {
         "company": "exact",
         "period": "inside",
@@ -661,9 +679,14 @@
       "deadline_soon": false,
       "claim_url": "https://ehisettlement.com/",
       "source_url": "https://topclassactions.com/lawsuit-settlements/open-lawsuit-settlements/3-5m-mdlive-data-privacy-class-action-settlement/",
-      "band": "likely",
-      "confidence": 0.63,
+      "band": "possible",
+      "confidence": 0.35,
       "reason": "Because we found your Virtual medical visit account email from Feb 11, 2024",
+      "judge": {
+        "product_fit": 0.5,
+        "own_transaction": true,
+        "reason": "Email shows MDLive virtual visit account activity, but cannot confirm patient portal login or Facebook/Google account status."
+      },
       "checks": {
         "company": "exact",
         "period": "inside",
@@ -678,7 +701,7 @@
         "email_type": "account_notice",
         "product": "Virtual medical visit",
         "evidence_line": "Thanks for your virtual visit today. Your visit summary",
-        "score": 0.63
+        "score": 0.35
       },
       "supporting": []
     }
