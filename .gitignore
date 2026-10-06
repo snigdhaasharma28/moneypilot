@@ -1,3 +1,11 @@
 .DS_Store
 node_modules/
 .env*
+
+# next.js / build
+/.next/
+/out/
+.vercel
+*.tsbuildinfo
+next-env.d.ts
+!.env.example
