@@ -4,12 +4,14 @@
   --background: #f6f0e6;
   --foreground: #1a1a1a;
   --accent: #1c7359;
+  --cta: #07b57a; /* bright green for the main call to action, as in the MoneyPilot app */
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-accent: var(--accent);
+  --color-cta: var(--cta);
   --font-sans: var(--font-inter);
   --font-display: var(--font-protest-strike);
 }

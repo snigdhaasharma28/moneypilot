@@ -188,137 +188,140 @@ export default function Feed({ result, onRestart }: Props) {
             </div>
           </section>
 
-          <div className="relative mt-5">
-            <div className="flex gap-2">
-              <label className="flex flex-1 items-center gap-2 rounded-2xl border border-stone-300 bg-white px-4 py-3">
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  className="text-foreground/50"
-                  aria-hidden
+          {/* Stays pinned under the app bar while the claim list scrolls. */}
+          <div className="sticky top-[65px] z-20 -mx-4 mt-3 bg-background px-4 pb-3 pt-2 md:-mx-6 md:px-6">
+            <div className="relative">
+              <div className="flex gap-2">
+                <label className="flex flex-1 items-center gap-2 rounded-2xl border border-stone-300 bg-white px-4 py-3">
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    className="text-foreground/50"
+                    aria-hidden
+                  >
+                    <circle cx="11" cy="11" r="7" />
+                    <path d="m20 20-3.5-3.5" />
+                  </svg>
+                  <input
+                    type="search"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Search claims"
+                    aria-label="Search claims"
+                    className="w-full bg-transparent text-base outline-none placeholder:text-foreground/50"
+                  />
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setFilterOpen((o) => !o)}
+                  aria-expanded={filterOpen}
+                  aria-label="Filter claims"
+                  className="relative flex w-14 items-center justify-center rounded-2xl border border-stone-300 bg-white"
                 >
-                  <circle cx="11" cy="11" r="7" />
-                  <path d="m20 20-3.5-3.5" />
-                </svg>
-                <input
-                  type="search"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search claims"
-                  aria-label="Search claims"
-                  className="w-full bg-transparent text-base outline-none placeholder:text-foreground/50"
-                />
-              </label>
-              <button
-                type="button"
-                onClick={() => setFilterOpen((o) => !o)}
-                aria-expanded={filterOpen}
-                aria-label="Filter claims"
-                className="relative flex w-14 items-center justify-center rounded-2xl border border-stone-300 bg-white"
-              >
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  aria-hidden
-                >
-                  <path d="M4 7h10M18 7h2M4 17h2M10 17h10" />
-                  <circle cx="16" cy="7" r="2" />
-                  <circle cx="8" cy="17" r="2" />
-                </svg>
-                {activeFilters > 0 && (
-                  <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-accent text-xs font-semibold text-white">
-                    {activeFilters}
-                  </span>
-                )}
-              </button>
-            </div>
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    aria-hidden
+                  >
+                    <path d="M4 7h10M18 7h2M4 17h2M10 17h10" />
+                    <circle cx="16" cy="7" r="2" />
+                    <circle cx="8" cy="17" r="2" />
+                  </svg>
+                  {activeFilters > 0 && (
+                    <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-accent text-xs font-semibold text-white">
+                      {activeFilters}
+                    </span>
+                  )}
+                </button>
+              </div>
 
-            {filterOpen && (
-              <div className="absolute inset-x-0 top-full z-20 mt-2 overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-xl">
-                <p className="border-b border-stone-200 px-5 py-4 font-semibold">Filters</p>
-                <div className="flex min-h-64">
-                  <nav className="w-40 shrink-0 border-r border-stone-200 py-2 text-sm md:w-56">
-                    {(
-                      [
-                        ["deadline", "Deadline", deadlineFilter],
-                        ["payout", "Payout", payoutFilter],
-                      ] as const
-                    ).map(([key, label, chosen]) => (
-                      <button
-                        key={key}
-                        type="button"
-                        onClick={() => setFilterTab(key)}
-                        className={`flex w-full items-center gap-3 px-4 py-3 text-left ${
-                          filterTab === key ? "bg-stone-100 font-semibold" : "text-foreground/70"
-                        }`}
-                      >
-                        <svg
-                          width="18"
-                          height="18"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1.8"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          aria-hidden
+              {filterOpen && (
+                <div className="absolute inset-x-0 top-full z-20 mt-2 overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-xl">
+                  <p className="border-b border-stone-200 px-5 py-4 font-semibold">Filters</p>
+                  <div className="flex min-h-64">
+                    <nav className="w-40 shrink-0 border-r border-stone-200 py-2 text-sm md:w-56">
+                      {(
+                        [
+                          ["deadline", "Deadline", deadlineFilter],
+                          ["payout", "Payout", payoutFilter],
+                        ] as const
+                      ).map(([key, label, chosen]) => (
+                        <button
+                          key={key}
+                          type="button"
+                          onClick={() => setFilterTab(key)}
+                          className={`flex w-full items-center gap-3 px-4 py-3 text-left ${
+                            filterTab === key ? "bg-stone-100 font-semibold" : "text-foreground/70"
+                          }`}
                         >
-                          {NAV_ICON[key]}
-                        </svg>
-                        <span className="flex-1">{label}</span>
-                        {chosen !== null && (
-                          <span className="h-2 w-2 rounded-full bg-accent" aria-label="active" />
-                        )}
-                        {filterTab === key && <span className="text-foreground/40">›</span>}
-                      </button>
-                    ))}
-                  </nav>
-                  <div className="flex-1 p-4">
-                    {filterTab === "deadline" ? (
-                      <FilterPills
-                        options={DEADLINE_FILTERS}
-                        value={deadlineFilter}
-                        onChange={setDeadlineFilter}
-                      />
-                    ) : (
-                      <FilterPills
-                        options={PAYOUT_FILTERS}
-                        value={payoutFilter}
-                        onChange={setPayoutFilter}
-                      />
-                    )}
+                          <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.8"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            aria-hidden
+                          >
+                            {NAV_ICON[key]}
+                          </svg>
+                          <span className="flex-1">{label}</span>
+                          {chosen !== null && (
+                            <span className="h-2 w-2 rounded-full bg-accent" aria-label="active" />
+                          )}
+                          {filterTab === key && <span className="text-foreground/40">›</span>}
+                        </button>
+                      ))}
+                    </nav>
+                    <div className="flex-1 p-4">
+                      {filterTab === "deadline" ? (
+                        <FilterPills
+                          options={DEADLINE_FILTERS}
+                          value={deadlineFilter}
+                          onChange={setDeadlineFilter}
+                        />
+                      ) : (
+                        <FilterPills
+                          options={PAYOUT_FILTERS}
+                          value={payoutFilter}
+                          onChange={setPayoutFilter}
+                        />
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between border-t border-stone-200 px-5 py-3 text-sm font-semibold text-accent">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPayoutFilter(null);
+                        setDeadlineFilter(null);
+                      }}
+                    >
+                      Reset
+                    </button>
+                    <button type="button" onClick={() => setFilterOpen(false)}>
+                      Done
+                    </button>
                   </div>
                 </div>
-                <div className="flex items-center justify-between border-t border-stone-200 px-5 py-3 text-sm font-semibold text-accent">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setPayoutFilter(null);
-                      setDeadlineFilter(null);
-                    }}
-                  >
-                    Reset
-                  </button>
-                  <button type="button" onClick={() => setFilterOpen(false)}>
-                    Done
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
 
-          <div className="mb-4 mt-5">
-            <span className="inline-block rounded-full border-2 border-accent bg-white px-5 py-2 font-semibold text-accent">
-              For You
-            </span>
+            <div className="mt-3">
+              <span className="inline-block rounded-full border-2 border-accent bg-white px-5 py-2 font-semibold text-accent">
+                For You
+              </span>
+            </div>
           </div>
 
           {shown.length === 0 && (

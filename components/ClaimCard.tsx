@@ -119,12 +119,12 @@ export default function ClaimCard({
         </div>
       )}
 
-      {/* Phone: CTA on top, small secondary actions below, both centred. Web: one row. */}
-      <footer className="mt-auto flex flex-col items-center gap-1.5 pt-1 md:flex-row md:gap-2">
+      {/* Phone: full-width CTA with small secondary actions below. Web: one row. */}
+      <footer className="mt-auto flex flex-col gap-2 pt-1 md:flex-row md:items-center">
         <button
           type="button"
           onClick={onStart}
-          className="w-[85%] rounded-full bg-accent px-6 py-3 text-center text-[15px] font-semibold text-white shadow-sm transition-opacity hover:opacity-90 active:scale-[0.99] md:w-auto md:flex-1 md:py-2.5 md:text-sm md:shadow-none"
+          className="w-full rounded-2xl bg-cta px-6 py-3 text-center text-base font-semibold text-white transition-opacity hover:opacity-90 active:scale-[0.99] md:flex-1 md:py-2.5 md:text-sm"
         >
           {submitted ? "Submitted ✓" : "Start claim"}
         </button>

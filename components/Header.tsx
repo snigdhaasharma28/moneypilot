@@ -36,7 +36,7 @@ function ProfileAvatar() {
 
 export default function Header() {
   return (
-    <header className="border-b border-foreground/10">
+    <header className="sticky top-0 z-30 border-b border-foreground/10 bg-background">
       <div className="mx-auto flex w-full max-w-md items-center justify-between px-5 py-3 md:max-w-5xl md:px-6">
         <Logo />
         <ProfileAvatar />
