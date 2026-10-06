@@ -41,7 +41,7 @@ lib/judge.ts               # Claude judge for Likely / Possible claims: product_
 lib/pipeline.ts            # runs prefilter -> extract -> match -> score -> judge -> score
 app/api/scan/route.ts      # POST { source: "sample" } | { source: "real" } | { source: "paste", email }
 app/page.tsx               # stage switch: intro | paste | scanning | feed
-components/                # Intro, PasteForm, Scanning, Feed, ClaimCard, WhyDrawer
+components/                # Header, Intro, PasteForm, Scanning, Feed, ClaimCard, WhyDrawer
 scripts/run-sample.ts      # run the pipeline on a data file and print the claims table
 scripts/eval.ts            # precision / recall vs labels (--no-judge to compare)
 ```
@@ -82,6 +82,7 @@ Be strict. Never guess a product, date or state not in the email. Return only JS
 ## UI and brand
 - Product framing: MoneyPilot's real app already has a "For You" tab next to "All". This feature is what powers "For You". Mirror the real app's claim card pattern: company logo/initial, settlement name, payout, "No proof needed" tag, "{n}+ filed"-style social proof is NOT available here, so skip it.
 - Mobile-first at 390 px, must also look fine at 1280 px.
+- Header on every screen (`components/Header.tsx`): MoneyPilot wordmark on the left, profile avatar on the right. Both are drawn in code (no logo file, no real account).
 - Headline font: Protest Strike (Google Fonts via next/font). Body: Inter.
 - Accent green #1C7359. Background warm beige #F6F0E6. Cards white, rounded-2xl, soft shadow.
 - Flow: Intro + consent card -> Scanning (animated counts, min 2.5 s) -> Feed (High / Likely / Possible sections) -> "Why this?" drawer -> Start claim / Not me.
