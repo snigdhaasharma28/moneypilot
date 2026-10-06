@@ -14,7 +14,7 @@ const ACCESS = [
 const STEPS = ["Finding your inbox", "Setting up read-only access", "Connected"];
 
 interface Props {
-  onBack: () => void;
+  onSkip: () => void; // scan the sample inbox without entering an address
   onConnected: (email: string) => void;
 }
 
@@ -61,7 +61,7 @@ function Connecting({ email, onDone }: { email: string; onDone: () => void }) {
 
 // Demo of the inbox connection step: the address is only shown back on screen,
 // it is never sent anywhere, and the scan that follows reads the sample inbox.
-export default function Connect({ onBack, onConnected }: Props) {
+export default function Connect({ onSkip, onConnected }: Props) {
   const [email, setEmail] = useState("");
   const [connecting, setConnecting] = useState(false);
   const address = email.trim();
@@ -129,8 +129,8 @@ export default function Connect({ onBack, onConnected }: Props) {
       )}
 
       {!connecting && (
-        <button type="button" onClick={onBack} className="text-sm font-semibold text-accent">
-          Back
+        <button type="button" onClick={onSkip} className="text-sm font-semibold text-accent">
+          Skip
         </button>
       )}
 

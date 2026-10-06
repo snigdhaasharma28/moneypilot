@@ -46,12 +46,14 @@ export default function Home() {
   const showFeed = useCallback(() => setStage("feed"), []);
 
   // Whatever address is entered, the scan reads the sample inbox.
-  function connectAndScan(email: string) {
+  function connectAndScan(email: string | null) {
     setAccount(email);
     startScan({ source: "sample" });
   }
 
-  if (stage === "connect") return <Connect onBack={() => setStage("intro")} onConnected={connectAndScan} />;
+  if (stage === "connect") {
+    return <Connect onSkip={() => connectAndScan(null)} onConnected={connectAndScan} />;
+  }
   if (stage === "scanning") return <Scanning result={result} account={account} onDone={showFeed} />;
   if (stage === "feed" && result) return <Feed result={result} onRestart={() => setStage("intro")} />;
   return <Intro error={error} onConnect={() => setStage("connect")} />;
