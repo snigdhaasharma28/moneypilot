@@ -89,12 +89,12 @@ a saved good run (`data/results.cached.json`) and the footer tag reads "cached" 
 
 | Part | Status |
 |---|---|
-| Settlement catalogue (`data/settlements.json`) | **Real.** 17 open settlements read from openclassactions.com and topclassactions.com on Oct 6, 2026 |
+| Settlement catalogue (`data/settlements.json`) | **Real.** 17 open settlements read from openclassactions.com and topclassactions.com on Oct 6, 2026. Spreadsheet copy: `data/settlements-tracker.csv` |
 | Extraction, matching, scoring, bands | **Real.** Runs live on every scan |
 | Real receipts (`data/real-samples.json`) | **Real.** Four of the builder's own emails, redacted. Used by the eval and the scan API (`source: "real"`); no button in the UI |
 | Single pasted email | **Real.** The scan API accepts one email (`source: "paste"`); no form in the UI |
 | UI and deploy | **Real** |
-| Sample inbox (`data/inbox.json`) | **Mocked.** 45 synthetic emails for a fictional persona, each with a ground-truth label |
+| Sample inbox (`data/inbox.json`) | **Mocked.** 45 synthetic emails for a fictional persona, each with a ground-truth label. Spreadsheet copy with results: `data/email-tracker.csv` |
 | Inbox connection (Gmail / Outlook OAuth) | **Not built** |
 | Claim filing | **Mocked.** The details → sign → submitted screens are a demo; nothing is sent, and the official claim site is linked |
 
