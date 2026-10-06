@@ -166,7 +166,7 @@ export default function Feed({ result, onRestart }: Props) {
             <div className="p-6">
               <p className="text-sm text-white/80">Scan complete</p>
               <h1 className="mt-1 font-display text-4xl leading-tight">
-                {plural(visible.length, "claim")} you likely qualify for
+                {plural(visible.length, "claim")} we recommend you file today
               </h1>
               {maxTotal > 0 && (
                 <p className="mt-1 text-white/85">
