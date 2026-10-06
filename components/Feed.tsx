@@ -95,9 +95,7 @@ export default function Feed({ result, onRestart }: Props) {
         ) : (
           <div className="mt-4 rounded-2xl bg-white p-6 text-center shadow-sm">
             <p className="font-semibold">
-              {result.source === "paste"
-                ? "No open settlement matches this email."
-                : "No open settlement matches these emails."}
+              No open settlement matches these emails.
             </p>
           </div>
         )}

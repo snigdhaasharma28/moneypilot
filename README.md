@@ -17,7 +17,7 @@ reads the receipts and tells the user which claims are theirs, and why.
 
 ## Magic moment
 
-Tap **Scan sample inbox** and, in about 20 seconds on the live demo (about 11 on a laptop), see a ranked feed where every card names the
+Tap **Scan inbox** and, in about 20 seconds on the live demo (about 11 on a laptop), see a ranked feed where every card names the
 email that proves it: "Because we found your iPhone 16 Pro 256GB, AppleCare+ order from Sep 20, 2024".
 
 | Intro | Feed | Why this? |
@@ -27,8 +27,8 @@ email that proves it: "Because we found your iPhone 16 Pro 256GB, AppleCare+ ord
 ## User flow
 
 1. **Intro and consent.** States what is read (order confirmations, receipts, subscription emails, breach
-   and settlement notices) and what is not (personal threads; nothing is stored). Three entry points: scan
-   the sample inbox, try four real receipts, or paste one email.
+   and settlement notices) and what is not (personal threads; nothing is stored). One button, "Scan inbox",
+   runs the scan on the sample inbox.
 2. **Scanning.** Counts up the real stats from the API: emails read → purchases and notices → claims matched.
 3. **Feed.** Claims grouped into High, Likely and Possible. Each card shows the settlement, a band pill
    (High / Likely / Possible; the numeric score stays behind the scenes for ranking), the reason line, the payout range, the deadline with days left (red when 14 days or fewer), and
@@ -91,8 +91,8 @@ a saved good run (`data/results.cached.json`) and the footer tag reads "cached" 
 |---|---|
 | Settlement catalogue (`data/settlements.json`) | **Real.** 17 open settlements read from openclassactions.com and topclassactions.com on Oct 6, 2026 |
 | Extraction, matching, scoring, bands | **Real.** Runs live on every scan |
-| "Try my real receipts" (`data/real-samples.json`) | **Real.** Four of the builder's own emails, redacted |
-| "Paste an email" | **Real.** Same pipeline on one pasted email |
+| Real receipts (`data/real-samples.json`) | **Real.** Four of the builder's own emails, redacted. Used by the eval and the scan API (`source: "real"`); no button in the UI |
+| Single pasted email | **Real.** The scan API accepts one email (`source: "paste"`); no form in the UI |
 | UI and deploy | **Real** |
 | Sample inbox (`data/inbox.json`) | **Mocked.** 45 synthetic emails for a fictional persona, each with a ground-truth label |
 | Inbox connection (Gmail / Outlook OAuth) | **Not built** |
@@ -133,8 +133,8 @@ In the labelled sample inbox, seven trap emails cover these cases; none is used 
 
 **In this MVP**
 
-- No inbox is connected. The sample inbox is synthetic, the real receipts are the builder's own and
-  redacted, and a pasted email is whatever the user chooses to paste.
+- No inbox is connected. The UI scans the synthetic sample inbox only; the real receipts used in the eval
+  are the builder's own and redacted.
 - Email text is sent to Anthropic's API for extraction and to nothing else. Bodies are cut to 2,500
   characters first.
 - Nothing is written to a database or to disk: there is no database, no account and no cookie. Server logs

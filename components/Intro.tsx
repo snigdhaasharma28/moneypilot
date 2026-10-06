@@ -1,14 +1,9 @@
 interface Props {
   error: string | null;
   onScanSample: () => void;
-  onScanReal: () => void;
-  onPaste: () => void;
 }
 
-const secondary =
-  "w-full rounded-full border border-accent/30 bg-white px-6 py-3 font-semibold text-accent transition-colors hover:bg-accent/5";
-
-export default function Intro({ error, onScanSample, onScanReal, onPaste }: Props) {
+export default function Intro({ error, onScanSample }: Props) {
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center gap-6 px-5 py-10">
       <div className="text-center">
@@ -35,21 +30,13 @@ export default function Intro({ error, onScanSample, onScanReal, onPaste }: Prop
         </p>
       )}
 
-      <div className="flex flex-col gap-3">
-        <button
-          type="button"
-          onClick={onScanSample}
-          className="w-full rounded-full bg-accent px-6 py-3.5 font-semibold text-white shadow-md transition-opacity hover:opacity-90"
-        >
-          Scan sample inbox (demo)
-        </button>
-        <button type="button" onClick={onScanReal} className={secondary}>
-          Try my real receipts
-        </button>
-        <button type="button" onClick={onPaste} className={secondary}>
-          Paste an email
-        </button>
-      </div>
+      <button
+        type="button"
+        onClick={onScanSample}
+        className="w-full rounded-full bg-accent px-6 py-3.5 font-semibold text-white shadow-md transition-opacity hover:opacity-90"
+      >
+        Scan inbox
+      </button>
 
       <p className="text-center text-xs text-foreground/55">
         Demo uses a sample inbox. Real inbox connection is coming.

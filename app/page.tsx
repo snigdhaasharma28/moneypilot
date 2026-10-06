@@ -3,12 +3,11 @@
 import { useCallback, useState } from "react";
 import Feed from "@/components/Feed";
 import Intro from "@/components/Intro";
-import PasteForm from "@/components/PasteForm";
 import Scanning from "@/components/Scanning";
-import type { PastedEmail, ScanResult } from "@/lib/types";
+import type { ScanResult } from "@/lib/types";
 
-type Stage = "intro" | "paste" | "scanning" | "feed";
-type ScanRequest = { source: "sample" } | { source: "real" } | { source: "paste"; email: PastedEmail };
+type Stage = "intro" | "scanning" | "feed";
+type ScanRequest = { source: "sample" };
 
 const MIN_WAIT_MS = 600; // plus the count-up animation, the scanning screen lasts at least 2.5 s
 
@@ -44,19 +43,9 @@ export default function Home() {
 
   const showFeed = useCallback(() => setStage("feed"), []);
 
-  if (stage === "paste") {
-    return (
-      <PasteForm onSubmit={(email) => startScan({ source: "paste", email })} onBack={() => setStage("intro")} />
-    );
-  }
   if (stage === "scanning") return <Scanning result={result} onDone={showFeed} />;
   if (stage === "feed" && result) return <Feed result={result} onRestart={() => setStage("intro")} />;
   return (
-    <Intro
-      error={error}
-      onScanSample={() => startScan({ source: "sample" })}
-      onScanReal={() => startScan({ source: "real" })}
-      onPaste={() => setStage("paste")}
-    />
+    <Intro error={error} onScanSample={() => startScan({ source: "sample" })} />
   );
 }
