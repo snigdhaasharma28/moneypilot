@@ -75,14 +75,26 @@ export default function WhyDrawer({ claim, band, onClose }: Props) {
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
+  // While the drawer is open only the drawer scrolls, never the feed behind it.
+  useEffect(() => {
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, []);
+
   return (
-    <div className="fixed inset-0 z-20 flex items-end justify-center bg-black/40" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-20 flex items-end justify-center bg-black/40 md:items-center md:p-6"
+      onClick={onClose}
+    >
       <section
         role="dialog"
         aria-modal="true"
         aria-label={`Why ${claim.name}`}
         onClick={(e) => e.stopPropagation()}
-        className="flex max-h-[88dvh] w-full max-w-lg flex-col gap-4 overflow-y-auto rounded-t-3xl bg-white p-5 shadow-xl"
+        className="flex max-h-[88dvh] w-full max-w-lg flex-col gap-4 overflow-y-auto overscroll-contain rounded-t-3xl bg-white p-5 shadow-xl md:rounded-3xl md:p-6"
       >
         <header className="flex items-start gap-3">
           <Avatar company={claim.company} />
