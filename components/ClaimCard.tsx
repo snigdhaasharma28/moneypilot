@@ -101,28 +101,31 @@ export default function ClaimCard({ claim, band, needsAnswer, submitted, onStart
         </div>
       )}
 
-      <footer className="mt-auto flex items-center gap-2 pt-1">
+      {/* Phone: big full-width CTA, secondary actions underneath. Web: one row. */}
+      <footer className="mt-auto flex flex-col gap-2 pt-1 md:flex-row md:items-center">
         <button
           type="button"
           onClick={onStart}
-          className="flex-1 rounded-full bg-accent px-4 py-2.5 text-center text-sm font-semibold text-white transition-opacity hover:opacity-90"
+          className="w-full rounded-full bg-accent px-6 py-4 text-center text-base font-bold text-white shadow-md transition-opacity hover:opacity-90 active:scale-[0.99] md:flex-1 md:py-2.5 md:text-sm md:font-semibold md:shadow-none"
         >
-          {submitted ? "Submitted ✓" : "Start claim"}
+          {submitted ? "Submitted ✓" : "Start claim →"}
         </button>
-        <button
-          type="button"
-          onClick={onWhy}
-          className="rounded-full border border-accent/30 px-4 py-2.5 text-sm font-semibold text-accent hover:bg-accent/5"
-        >
-          Why this?
-        </button>
-        <button
-          type="button"
-          onClick={onNotMe}
-          className="rounded-full px-3 py-2.5 text-sm font-medium text-foreground/60 hover:text-foreground"
-        >
-          Not me
-        </button>
+        <div className="flex items-center justify-between gap-2 md:justify-start">
+          <button
+            type="button"
+            onClick={onWhy}
+            className="flex-1 rounded-full border border-accent/30 px-4 py-2.5 text-sm font-semibold text-accent hover:bg-accent/5 md:flex-none"
+          >
+            Why this?
+          </button>
+          <button
+            type="button"
+            onClick={onNotMe}
+            className="flex-1 rounded-full px-3 py-2.5 text-sm font-medium text-foreground/60 hover:text-foreground md:flex-none"
+          >
+            Not me
+          </button>
+        </div>
       </footer>
     </article>
   );
