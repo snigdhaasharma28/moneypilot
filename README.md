@@ -17,7 +17,7 @@ reads the receipts and tells the user which claims are theirs, and why.
 
 ## Magic moment
 
-Tap **Scan sample inbox** and, in about 10 to 13 seconds, see a ranked feed where every card names the
+Tap **Scan sample inbox** and, in about 20 seconds on the live demo (about 11 on a laptop), see a ranked feed where every card names the
 email that proves it: "Because we found your iPhone 16 Pro 256GB, AppleCare+ order from Sep 20, 2024".
 
 | Intro | Feed | Why this? |
@@ -30,10 +30,10 @@ email that proves it: "Because we found your iPhone 16 Pro 256GB, AppleCare+ ord
    and settlement notices) and what is not (personal threads; nothing is stored). Three entry points: scan
    the sample inbox, try four real receipts, or paste one email.
 2. **Scanning.** Counts up the real stats from the API: emails read → purchases and notices → claims matched.
-3. **Feed.** Claims grouped into High, Likely and Possible. Each card shows the settlement, a confidence
-   pill, the reason line, the payout range, the deadline with days left (red when 14 days or fewer), and
+3. **Feed.** Claims grouped into High, Likely and Possible. Each card shows the settlement, a band pill
+   (High / Likely / Possible; the numeric score stays behind the scenes for ranking), the reason line, the payout range, the deadline with days left (red when 14 days or fewer), and
    "Proof needed" / "Notice ID needed" tags.
-4. **Why this?** A bottom drawer with the primary email (sender, subject, date, quoted evidence line),
+4. **Why this?** A bottom sheet on phones and a centred pop-up on web, with the primary email (sender, subject, date, quoted evidence line),
    supporting emails, the checks that passed or need attention (company, class period, product, state),
    who qualifies, and a link to the settlement source.
 5. **Act.** "Start claim" opens an in-app claim screen with the payout, deadline, why it matched, who

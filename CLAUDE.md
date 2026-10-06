@@ -41,7 +41,7 @@ lib/judge.ts               # Claude judge for Likely / Possible claims: product_
 lib/pipeline.ts            # runs prefilter -> extract -> match -> score -> judge -> score
 app/api/scan/route.ts      # POST { source: "sample" } | { source: "real" } | { source: "paste", email }
 app/page.tsx               # stage switch: intro | paste | scanning | feed
-components/                # Header, Intro, PasteForm, Scanning, Feed, ClaimCard, WhyDrawer
+components/                # Header, Intro, PasteForm, Scanning, Feed, ClaimCard, WhyDrawer, ClaimDetail, ClaimSign
 scripts/run-sample.ts      # run the pipeline on a data file and print the claims table
 scripts/eval.ts            # precision / recall vs labels (--no-judge to compare)
 ```
@@ -89,7 +89,7 @@ Be strict. Never guess a product, date or state not in the email. Return only JS
 - Card: company initial avatar, settlement name, confidence pill (High green, Likely amber, Possible grey; band label only, the % stays in the API for sorting and banding), reason line, payout range, deadline + days left (red badge if deadline_soon), "Proof needed" / "Notice ID needed" tags.
 - Start claim opens an in-app flow (`components/ClaimDetail.tsx`, `components/ClaimSign.tsx`): "Submit Claim" details (hero with payout and deadline, why it matched, who qualifies, payout note, what you'll need) -> "Claim Settlement" -> draw-to-sign screen -> "Claim Submitted!". It is a demo of the filing flow: nothing is filed and the signature is never stored, and the submitted screen says so. The official site (`claim_url`, or `source_url` if null) is only a link inside this flow.
 - Feed header: "{n} claims you likely qualify for" + "up to $X" (sum of payout_max, labelled as an estimate).
-- "Why this?" drawer: primary email with the evidence line highlighted, supporting emails, checks (company, class period, product, state, judge reason when present), eligibility summary, link to `source_url`.
+- "Why this?" drawer (bottom sheet on phones, centred pop-up on web; the feed behind it does not scroll while it is open): primary email with the evidence line highlighted, supporting emails, checks (company, class period, product, state, judge reason when present), eligibility summary, link to `source_url`.
 - Possible cards ask one Yes/No question from `eligibility_summary`; Yes moves the card to Likely, No hides it.
 - "Not me" hides the card with undo and logs `{ event: "not_me", settlement_id, confidence }` to the console.
 - Paste form empty state: "No open settlement matches this email."
