@@ -33,11 +33,11 @@ email that proves it: "Because we found your iPhone 16 Pro 256GB, AppleCare+ ord
    server, and whatever is entered the scan reads the sample inbox. "Skip" runs the same scan without an address. The note on the screen says so.
 3. **Scanning.** Counts up the real stats from the API: emails read → purchases and notices → claims matched.
 4. **Feed.** A green summary card (claims found, estimated total, emails read, purchases and notices
-   found), a search bar and a filter button, then the "For You" list. Claims are grouped into High, Likely
+   found), a search bar and a filter button, then the "For You" list. On phones the app bar, the search row and the "For You" pill stay pinned while the cards scroll. Claims are grouped into High, Likely
    and Possible, ranked inside each group by confidence × payout (the API order). The filter opens a two-pane "Filters" popover with two options: deadline (next 7, 30, 60 or 90 days) and
    payout (up to $100, $100 - $500, $500 - $1,000, $1,000+, by the claim's largest payout). Search matches the settlement name, company and product. Each card shows the settlement,
    a band pill (High / Likely / Possible; the numeric score stays behind the scenes for ranking), the reason line,
-   the payout range, the deadline with days left (red when 14 days or fewer), and "Proof needed" / "Notice ID needed" tags.
+   the payout range, the deadline with days left (red when 14 days or fewer), and "Proof needed" / "Notice ID needed" tags. "Start claim" is a full-width bright-green bar; "Why this?" and "Not me" sit under it.
 5. **Why this?** A bottom sheet on phones and a centred pop-up on web, with the primary email (sender, subject, date, quoted evidence line),
    supporting emails, the checks that passed or need attention (company, class period, product, state),
    who qualifies, and a link to the settlement source.
