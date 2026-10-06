@@ -162,34 +162,25 @@ export default function Feed({ result, onRestart }: Props) {
     <main className="mx-auto w-full max-w-md flex-1 px-4 py-6 md:max-w-3xl md:px-6">
       {result.claims.length > 0 ? (
         <>
-          <section className="overflow-hidden rounded-3xl bg-accent text-white shadow-sm">
-            <div className="p-6">
-              <p className="text-sm text-white/80">Scan complete</p>
-              <h1 className="mt-1 font-display text-4xl leading-tight">
+          <section className="overflow-hidden rounded-2xl bg-accent text-white shadow-sm">
+            <div className="px-4 py-3.5 md:px-5">
+              <h1 className="font-display text-2xl leading-tight">
                 {plural(visible.length, "claim")} we recommend you file today
               </h1>
               {maxTotal > 0 && (
-                <p className="mt-1 text-white/85">
+                <p className="mt-1 text-sm text-white/85">
                   up to{" "}
                   <span className="font-semibold text-yellow-200">{formatMoney(maxTotal)}</span>{" "}
-                  <span className="text-sm">(estimate, if every maximum payout applied)</span>
+                  <span className="text-xs">(estimate)</span>
                 </p>
               )}
-              <ul className="mt-5 space-y-2 text-sm text-white/90">
-                <li>
-                  Read <b className="text-yellow-200">{result.stats.total_emails}</b> emails
-                </li>
-                <li>
-                  Found <b className="text-yellow-200">{result.stats.purchases_and_notices}</b>{" "}
-                  purchases and notices
-                </li>
-                <li>
-                  Matched them to <b className="text-yellow-200">{result.claims.length}</b> open
-                  settlements
-                </li>
-              </ul>
+              <p className="mt-2 text-xs text-white/80">
+                <b className="text-yellow-200">{result.stats.total_emails}</b> emails read ·{" "}
+                <b className="text-yellow-200">{result.stats.purchases_and_notices}</b> purchases
+                and notices
+              </p>
             </div>
-            <div className="flex items-center justify-between bg-green-300 px-6 py-3 text-sm font-semibold text-accent">
+            <div className="flex items-center justify-between bg-green-300 px-4 py-1.5 text-xs font-semibold text-accent md:px-5">
               <span>Settlement data as of {formatDate(result.snapshot_date)}</span>
               <button type="button" onClick={onRestart} className="underline">
                 Start over

@@ -1,7 +1,11 @@
 import { daysLeftLabel, formatDate, payoutRange } from "@/lib/format";
 import type { Band, Claim } from "@/lib/types";
 
-export const BAND_LABEL: Record<Band, string> = { high: "High", likely: "Likely", possible: "Possible" };
+export const BAND_LABEL: Record<Band, string> = {
+  high: "High",
+  likely: "Likely",
+  possible: "Possible",
+};
 const BAND_PILL: Record<Band, string> = {
   high: "bg-accent/10 text-accent",
   likely: "bg-amber-100 text-amber-800",
@@ -18,7 +22,10 @@ export function ConfidencePill({ band }: { band: Band }) {
 }
 
 export function Avatar({ company }: { company: string }) {
-  const initial = company.replace(/^the\s+/i, "").charAt(0).toUpperCase();
+  const initial = company
+    .replace(/^the\s+/i, "")
+    .charAt(0)
+    .toUpperCase();
   return (
     <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent font-display text-xl text-white">
       {initial}
@@ -45,7 +52,16 @@ interface Props {
   onConfirm: () => void;
 }
 
-export default function ClaimCard({ claim, band, needsAnswer, submitted, onStart, onWhy, onNotMe, onConfirm }: Props) {
+export default function ClaimCard({
+  claim,
+  band,
+  needsAnswer,
+  submitted,
+  onStart,
+  onWhy,
+  onNotMe,
+  onConfirm,
+}: Props) {
   return (
     <article className="flex flex-col gap-3 rounded-2xl bg-white p-4 shadow-sm md:gap-4 md:p-6">
       <header className="flex items-start gap-3">
@@ -59,7 +75,9 @@ export default function ClaimCard({ claim, band, needsAnswer, submitted, onStart
       {/* Phone: payout row then tags row. Web: one row, payout left and tags right. */}
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div className="flex flex-wrap items-center justify-between gap-2 md:justify-start md:gap-4">
-          <span className="text-lg font-semibold text-accent md:text-2xl">{payoutRange(claim)}</span>
+          <span className="text-lg font-semibold text-accent md:text-2xl">
+            {payoutRange(claim)}
+          </span>
           <span className="flex items-center gap-2 text-xs text-foreground/65">
             Due {formatDate(claim.claim_deadline)}
             <span
@@ -101,27 +119,27 @@ export default function ClaimCard({ claim, band, needsAnswer, submitted, onStart
         </div>
       )}
 
-      {/* Phone: big full-width CTA, secondary actions underneath. Web: one row. */}
-      <footer className="mt-auto flex flex-col gap-2 pt-1 md:flex-row md:items-center">
+      {/* Phone: CTA on top, small secondary actions below, both centred. Web: one row. */}
+      <footer className="mt-auto flex flex-col items-center gap-1.5 pt-1 md:flex-row md:gap-2">
         <button
           type="button"
           onClick={onStart}
-          className="w-full rounded-full bg-accent px-6 py-4 text-center text-base font-bold text-white shadow-md transition-opacity hover:opacity-90 active:scale-[0.99] md:flex-1 md:py-2.5 md:text-sm md:font-semibold md:shadow-none"
+          className="w-[85%] rounded-full bg-accent px-6 py-3 text-center text-[15px] font-semibold text-white shadow-sm transition-opacity hover:opacity-90 active:scale-[0.99] md:w-auto md:flex-1 md:py-2.5 md:text-sm md:shadow-none"
         >
-          {submitted ? "Submitted ✓" : "Start claim →"}
+          {submitted ? "Submitted ✓" : "Start claim"}
         </button>
-        <div className="flex items-center justify-between gap-2 md:justify-start">
+        <div className="flex items-center justify-center gap-2">
           <button
             type="button"
             onClick={onWhy}
-            className="flex-1 rounded-full border border-accent/30 px-4 py-2.5 text-sm font-semibold text-accent hover:bg-accent/5 md:flex-none"
+            className="rounded-full border border-accent/30 px-4 py-1.5 text-xs font-semibold text-accent hover:bg-accent/5 md:py-2.5 md:text-sm"
           >
             Why this?
           </button>
           <button
             type="button"
             onClick={onNotMe}
-            className="flex-1 rounded-full px-3 py-2.5 text-sm font-medium text-foreground/60 hover:text-foreground md:flex-none"
+            className="rounded-full px-3 py-1.5 text-xs font-medium text-foreground/60 hover:text-foreground md:py-2.5 md:text-sm"
           >
             Not me
           </button>
