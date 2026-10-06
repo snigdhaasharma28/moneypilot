@@ -1,7 +1,7 @@
 # Inbox Claim Matcher (MoneyPilot MVP)
 
 ## What this is
-A 2-hour MVP for MoneyPilot, an app that helps US consumers find and file class-action settlement claims.
+An MVP for MoneyPilot, an app that helps US consumers find and file class-action settlement claims.
 Instead of a generic quiz, we read a user's inbox, find proof of what they bought or used, match it to open
 settlements, and show a ranked feed of claims with the reason for each ("Because we found your Spotify renewal, Mar 12, 2023").
 
@@ -28,8 +28,11 @@ Optimise for a clean, working core loop over breadth. When in doubt, cut scope a
 data/settlements.json      # real settlements (DO NOT EDIT unless asked)
 data/inbox.json            # synthetic inbox with labels (DO NOT EDIT unless asked)
 data/real-samples.json     # 4 REAL emails from the builder's Gmail, redacted (Apple, Fabletics, Lyft, WHOOP)
-data/results.cached.json   # saved good run, used as fallback
+data/results.cached.json   # saved good sample run, used as fallback (rewrite with run-sample.ts --save)
+data/eval.json             # last eval run (written by scripts/eval.ts)
+docs/                      # README screenshots (intro, feed, why-this)
 lib/types.ts
+lib/format.ts              # date / money / payout formatting for the UI
 lib/prefilter.ts           # rules: keep transaction / notice emails, drop noise
 lib/extract.ts             # Claude extraction (batches of 10, parallel)
 lib/match.ts               # email facts -> candidate settlements
@@ -37,8 +40,10 @@ lib/score.ts               # confidence formula, bands, sort, reason line
 lib/judge.ts               # Claude judge for Likely / Possible claims: product_fit replaces P
 lib/pipeline.ts            # runs prefilter -> extract -> match -> score -> judge -> score
 app/api/scan/route.ts      # POST { source: "sample" } | { source: "real" } | { source: "paste", email }
-app/page.tsx               # the whole UI flow (split into components/ as needed)
-scripts/eval.ts            # precision / recall vs labels
+app/page.tsx               # stage switch: intro | paste | scanning | feed
+components/                # Intro, PasteForm, Scanning, Feed, ClaimCard, WhyDrawer
+scripts/run-sample.ts      # run the pipeline on a data file and print the claims table
+scripts/eval.ts            # precision / recall vs labels (--no-judge to compare)
 ```
 Never send the `label` field of inbox emails to Claude or the UI. It is only for `scripts/eval.ts`.
 
@@ -60,7 +65,8 @@ Never send the `label` field of inbox emails to Claude or the UI. It is only for
    - Sort by band, then confidence x payout midpoint (null -> payout_min -> 25).
    - `deadline_soon` = claim_deadline within 14 days of today.
    - Reason line: "Because we found your {product or company} {email_type label} from {Mon D, YYYY}".
-5. If no API key, Claude errors, or the scan takes > 20 s: return `data/results.cached.json` with `mode: "cached"`.
+5. Judge (Claude, `lib/judge.ts`): only for claims the formula puts in Likely or Possible. Send the extracted email facts (not the body) and the settlement's `eligibility_summary`; get `{ product_fit: 0-1, own_transaction, reason }`. `product_fit` replaces P and the formula in step 4 scores again; `own_transaction = false` drops that email. Never judge High claims. If the judge call fails, keep the formula score.
+6. If no API key, Claude errors, or the scan takes > 20 s: the sample source returns `data/results.cached.json` with `mode: "cached"`; real and paste return a 503 error (the saved run is the sample inbox only).
 
 ## Extraction prompt (system prompt for Claude, keep in lib/extract.ts)
 You read emails from one person's inbox and extract evidence that THEY bought, subscribed to, or used a product or service, or that a company notified THEM directly. This evidence is matched to class-action settlements.
@@ -81,6 +87,11 @@ Be strict. Never guess a product, date or state not in the email. Return only JS
 - Flow: Intro + consent card -> Scanning (animated counts, min 2.5 s) -> Feed (High / Likely / Possible sections) -> "Why this?" drawer -> Start claim / Not me.
 - Card: company initial avatar, settlement name, confidence pill (High green, Likely amber, Possible grey, with %), reason line, payout range, deadline + days left (red badge if deadline_soon), "Proof needed" / "Notice ID needed" tags.
 - Start claim opens `claim_url`, or `source_url` if claim_url is null.
+- Feed header: "{n} claims you likely qualify for" + "up to $X" (sum of payout_max, labelled as an estimate).
+- "Why this?" drawer: primary email with the evidence line highlighted, supporting emails, checks (company, class period, product, state, judge reason when present), eligibility summary, link to `source_url`.
+- Possible cards ask one Yes/No question from `eligibility_summary`; Yes moves the card to Likely, No hides it.
+- "Not me" hides the card with undo and logs `{ event: "not_me", settlement_id, confidence }` to the console.
+- Paste form empty state: "No open settlement matches this email."
 - Footer: "{n} weak matches hidden" + "Settlement data as of Oct 6, 2026 from openclassactions.com and topclassactions.com" + small "live" / "cached" tag.
 
 ## Working rules
@@ -93,5 +104,5 @@ Be strict. Never guess a product, date or state not in the email. Return only JS
 ## Definition of done
 - Live Vercel URL works on a phone.
 - Sample scan returns a ranked feed; every card has a reason; no trap email (label.is_trap) appears as evidence.
-- `npx tsx scripts/eval.ts` prints precision/recall; numbers are in README.
-- README covers: problem, approach, real vs mocked, algorithm, privacy, eval, verify & monitor, future scope.
+- `npx tsx --env-file=.env.local scripts/eval.ts` prints precision/recall; numbers are in README. Targets: high precision >= 90%, recall >= 80%, traps = 0.
+- README covers: problem, approach, real vs mocked, algorithm, privacy, eval, verify & monitor, future scope. Keep it in step with the code when the pipeline or UI changes.
