@@ -101,7 +101,7 @@ export default function WhyDrawer({ claim, band, onClose }: Props) {
         </header>
 
         <div className="flex items-center gap-2">
-          <ConfidencePill band={band} confidence={claim.confidence} />
+          <ConfidencePill band={band} />
           <p className="text-sm text-foreground/70">{claim.reason}</p>
         </div>
 

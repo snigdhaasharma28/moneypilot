@@ -8,10 +8,11 @@ const BAND_PILL: Record<Band, string> = {
   possible: "bg-stone-200 text-stone-700",
 };
 
-export function ConfidencePill({ band, confidence }: { band: Band; confidence: number }) {
+// Shows the band only; the numeric confidence stays in the API for sorting and banding.
+export function ConfidencePill({ band }: { band: Band }) {
   return (
     <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${BAND_PILL[band]}`}>
-      {BAND_LABEL[band]} {Math.round(confidence * 100)}%
+      {BAND_LABEL[band]}
     </span>
   );
 }
@@ -48,7 +49,7 @@ export default function ClaimCard({ claim, band, needsAnswer, onWhy, onNotMe, on
       <header className="flex items-start gap-3">
         <Avatar company={claim.company} />
         <h3 className="min-w-0 flex-1 font-semibold leading-snug">{claim.name}</h3>
-        <ConfidencePill band={band} confidence={claim.confidence} />
+        <ConfidencePill band={band} />
       </header>
 
       <p className="text-sm text-foreground/75">{claim.reason}</p>
