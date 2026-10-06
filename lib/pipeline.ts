@@ -56,6 +56,10 @@ function scoreEmails(emails: Email[], extractions: Extraction[]): ScoredMatch[] 
   });
 }
 
+function isPurchaseOrNotice(x: Extraction): boolean {
+  return !x.is_false_positive && x.email_type !== "marketing" && x.email_type !== "other";
+}
+
 // prefilter -> extract -> match -> score. `trace` is for scripts only, never for the UI.
 export async function runPipeline(emails: Email[], source: ScanSource, today = new Date()) {
   const kept = prefilter(emails, settlements);
@@ -70,6 +74,7 @@ export async function runPipeline(emails: Email[], source: ScanSource, today = n
     stats: {
       total_emails: emails.length,
       kept_after_prefilter: kept.length,
+      purchases_and_notices: extractions.filter(isPurchaseOrNotice).length,
       false_positives_dropped: extractions.filter((x) => x.is_false_positive).length,
     },
     claims,

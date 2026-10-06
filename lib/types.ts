@@ -86,6 +86,18 @@ export interface ScoredMatch extends Match {
 
 export type Band = "high" | "likely" | "possible";
 
+// How the primary evidence did on each scoring factor; shown in the "Why this?" drawer.
+export type PeriodCheck = "notice" | "inside" | "no_period" | "outside";
+export type ProductCheck = "found" | "no_keywords" | "not_found";
+export type StateCheck = "none" | "match" | "unknown" | "mismatch";
+
+export interface ClaimChecks {
+  company: MatchKind;
+  period: PeriodCheck;
+  product: ProductCheck;
+  state: StateCheck;
+}
+
 // One email shown as proof on a claim card.
 export interface Evidence {
   email_id: string;
@@ -108,6 +120,9 @@ export interface Claim {
   payout_note: string | null;
   proof_required: boolean | null;
   notice_id_required: boolean | null;
+  class_period_start: string | null;
+  class_period_end: string | null;
+  state_restriction: string | null;
   claim_deadline: string;
   days_left: number;
   deadline_soon: boolean;
@@ -116,6 +131,7 @@ export interface Claim {
   band: Band;
   confidence: number;
   reason: string;
+  checks: ClaimChecks;
   primary: Evidence;
   supporting: Evidence[];
 }
@@ -125,6 +141,7 @@ export type ScanSource = "sample" | "real" | "paste";
 export interface ScanStats {
   total_emails: number;
   kept_after_prefilter: number;
+  purchases_and_notices: number;
   false_positives_dropped: number;
 }
 

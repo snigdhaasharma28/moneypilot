@@ -6,9 +6,12 @@ import type {
   Evidence,
   Match,
   MatchKind,
+  PeriodCheck,
+  ProductCheck,
   ScanResult,
   ScoredMatch,
   Settlement,
+  StateCheck,
 } from "./types";
 
 const E: Record<EmailType, number> = {
@@ -23,6 +26,9 @@ const E: Record<EmailType, number> = {
   other: 0.3,
 };
 const M: Record<MatchKind, number> = { exact: 1.0, parent: 0.8, fuzzy: 0.5 };
+const T: Record<PeriodCheck, number> = { notice: 1.0, inside: 1.0, no_period: 0.7, outside: 0.2 };
+const P: Record<ProductCheck, number> = { found: 1.0, no_keywords: 0.9, not_found: 0.6 };
+const STATE: Record<Exclude<StateCheck, "mismatch">, number> = { none: 1, match: 1, unknown: 0.7 };
 
 const TYPE_LABEL: Record<EmailType, string> = {
   settlement_notice: "settlement notice",
@@ -49,37 +55,37 @@ function evidenceDate(m: Match): string {
   return m.extraction.transaction_date ?? m.email.date.slice(0, 10);
 }
 
-function timeScore(m: Match): number {
+function periodCheck(m: Match): PeriodCheck {
   const { settlement: s, extraction: ex } = m;
   // A notice addressed to the user is proof in itself; its date is not a transaction date.
-  if (ex.email_type === "settlement_notice") return 1.0;
-  if (s.match_rule === "breach_notice" && ex.email_type === "breach_notice") return 1.0;
-  if (!s.class_period_start && !s.class_period_end) return 0.7;
+  if (ex.email_type === "settlement_notice") return "notice";
+  if (s.match_rule === "breach_notice" && ex.email_type === "breach_notice") return "notice";
+  if (!s.class_period_start && !s.class_period_end) return "no_period";
   const date = evidenceDate(m);
   const afterStart = !s.class_period_start || date >= s.class_period_start;
   const beforeEnd = !s.class_period_end || date <= s.class_period_end;
-  return afterStart && beforeEnd ? 1.0 : 0.2;
+  return afterStart && beforeEnd ? "inside" : "outside";
 }
 
-function productScore(m: Match): number {
+function productCheck(m: Match): ProductCheck {
   const keywords = m.settlement.product_keywords;
-  if (keywords.length === 0) return 0.9;
+  if (keywords.length === 0) return "no_keywords";
   const text = normalise(`${m.extraction.product ?? ""} ${m.email.subject} ${m.email.body}`);
-  return keywords.some((k) => hasPhrase(text, k)) ? 1.0 : 0.6;
+  return keywords.some((k) => hasPhrase(text, k)) ? "found" : "not_found";
 }
 
-// 1 = no restriction or same state, 0.7 = state unknown, null = different state (drop).
-function stateFactor(m: Match): number | null {
+function stateCheck(m: Match): StateCheck {
   const required = m.settlement.state_restriction;
-  if (!required) return 1;
-  if (!m.extraction.billing_state) return 0.7;
-  return m.extraction.billing_state === required ? 1 : null;
+  if (!required) return "none";
+  if (!m.extraction.billing_state) return "unknown";
+  return m.extraction.billing_state === required ? "match" : "mismatch";
 }
 
 export function scoreMatch(m: Match): ScoredMatch | null {
-  const state = stateFactor(m);
-  if (state === null) return null;
-  const score = E[m.extraction.email_type] * M[m.kind] * timeScore(m) * productScore(m) * state;
+  const state = stateCheck(m);
+  if (state === "mismatch") return null; // wrong state: not in the class
+  const score =
+    E[m.extraction.email_type] * M[m.kind] * T[periodCheck(m)] * P[productCheck(m)] * STATE[state];
   return { ...m, score };
 }
 
@@ -147,7 +153,7 @@ function sortClaims(claims: Claim[]): Claim[] {
 function toClaim(group: ScoredMatch[], today: Date): Claim | null {
   const [primary, ...rest] = [...group].sort((a, b) => b.score - a.score);
   // Only emails that would stand on their own, and are about the settlement's product, count as extra evidence.
-  const supporting = rest.filter((m) => m.score >= POSSIBLE_MIN && productScore(m) >= 0.9);
+  const supporting = rest.filter((m) => m.score >= POSSIBLE_MIN && productCheck(m) !== "not_found");
   const confidence = Math.min(0.99, primary.score + Math.min(0.15, 0.05 * supporting.length));
   const band = bandFor(confidence);
   if (!band) return null;
@@ -164,6 +170,9 @@ function toClaim(group: ScoredMatch[], today: Date): Claim | null {
     payout_note: s.payout_note,
     proof_required: s.proof_required,
     notice_id_required: s.notice_id_required,
+    class_period_start: s.class_period_start,
+    class_period_end: s.class_period_end,
+    state_restriction: s.state_restriction,
     claim_deadline: s.claim_deadline,
     days_left: days,
     deadline_soon: days <= DEADLINE_SOON_DAYS,
@@ -172,6 +181,12 @@ function toClaim(group: ScoredMatch[], today: Date): Claim | null {
     band,
     confidence: round2(confidence),
     reason: reasonLine(primary),
+    checks: {
+      company: primary.kind,
+      period: periodCheck(primary),
+      product: productCheck(primary),
+      state: stateCheck(primary),
+    },
     primary: toEvidence(primary),
     supporting: supporting.map(toEvidence),
   };

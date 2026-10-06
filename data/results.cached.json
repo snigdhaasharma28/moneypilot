@@ -1,12 +1,13 @@
 {
   "mode": "live",
   "source": "sample",
-  "scanned_at": "2026-10-06T14:40:34.648Z",
+  "scanned_at": "2026-10-06T14:52:51.978Z",
   "snapshot_date": "2026-10-06",
   "stats": {
     "total_emails": 45,
     "kept_after_prefilter": 38,
-    "false_positives_dropped": 6
+    "purchases_and_notices": 32,
+    "false_positives_dropped": 5
   },
   "claims": [
     {
@@ -19,6 +20,9 @@
       "payout_note": "About $60 with no receipts, or up to $5,000 documented, plus 2 years of monitoring",
       "proof_required": false,
       "notice_id_required": true,
+      "class_period_start": null,
+      "class_period_end": null,
+      "state_restriction": null,
       "claim_deadline": "2026-10-22",
       "days_left": 16,
       "deadline_soon": false,
@@ -27,6 +31,12 @@
       "band": "high",
       "confidence": 0.91,
       "reason": "Because we found your Lands' End data breach notice from Jan 24, 2025",
+      "checks": {
+        "company": "exact",
+        "period": "notice",
+        "product": "no_keywords",
+        "state": "none"
+      },
       "primary": {
         "email_id": "e28",
         "from_name": "Lands' End",
@@ -60,6 +70,9 @@
       "payout_note": "$45 with no documentation, or up to $5,000 documented, plus 2 years of credit monitoring",
       "proof_required": false,
       "notice_id_required": true,
+      "class_period_start": null,
+      "class_period_end": null,
+      "state_restriction": null,
       "claim_deadline": "2026-11-12",
       "days_left": 37,
       "deadline_soon": false,
@@ -68,6 +81,12 @@
       "band": "high",
       "confidence": 0.91,
       "reason": "Because we found your Autobell Car Wash data breach notice from Jun 20, 2024",
+      "checks": {
+        "company": "exact",
+        "period": "notice",
+        "product": "no_keywords",
+        "state": "none"
+      },
       "primary": {
         "email_id": "e30",
         "from_name": "Autobell Car Wash",
@@ -101,6 +120,9 @@
       "payout_note": "Estimated $100 pro rata and/or up to $5,000 documented, plus up to 3 years of monitoring",
       "proof_required": false,
       "notice_id_required": true,
+      "class_period_start": null,
+      "class_period_end": null,
+      "state_restriction": null,
       "claim_deadline": "2026-10-23",
       "days_left": 17,
       "deadline_soon": false,
@@ -109,6 +131,12 @@
       "band": "high",
       "confidence": 0.86,
       "reason": "Because we found your Equinox, Inc. data breach notice from Aug 15, 2024",
+      "checks": {
+        "company": "exact",
+        "period": "notice",
+        "product": "no_keywords",
+        "state": "none"
+      },
       "primary": {
         "email_id": "e29",
         "from_name": "Equinox, Inc.",
@@ -131,6 +159,9 @@
       "payout_note": "$25 per device, adjusted pro rata; up to $95 if few people file",
       "proof_required": false,
       "notice_id_required": false,
+      "class_period_start": "2024-06-10",
+      "class_period_end": "2025-03-29",
+      "state_restriction": null,
       "claim_deadline": "2026-12-21",
       "days_left": 76,
       "deadline_soon": false,
@@ -139,6 +170,12 @@
       "band": "high",
       "confidence": 0.9,
       "reason": "Because we found your iPhone 16 Pro 256GB, AppleCare+ order from Sep 20, 2024",
+      "checks": {
+        "company": "exact",
+        "period": "inside",
+        "product": "found",
+        "state": "none"
+      },
       "primary": {
         "email_id": "e01",
         "from_name": "Apple Store",
@@ -161,6 +198,9 @@
       "payout_note": "About $71.39 for bookers, about $3.60 for browsers",
       "proof_required": false,
       "notice_id_required": false,
+      "class_period_start": "2024-09-18",
+      "class_period_end": "2026-03-16",
+      "state_restriction": "CA",
       "claim_deadline": "2026-11-24",
       "days_left": 49,
       "deadline_soon": false,
@@ -169,6 +209,12 @@
       "band": "high",
       "confidence": 0.9,
       "reason": "Because we found your Hotel Room Reservation, Luxury King Suite order from Feb 3, 2025",
+      "checks": {
+        "company": "exact",
+        "period": "inside",
+        "product": "found",
+        "state": "match"
+      },
       "primary": {
         "email_id": "e09",
         "from_name": "The Venetian Resort Las Vegas",
@@ -191,6 +237,9 @@
       "payout_note": "Pro rata share of about $483,000 net, calculated from Raging Waters' records",
       "proof_required": false,
       "notice_id_required": true,
+      "class_period_start": "2020-06-01",
+      "class_period_end": "2026-06-22",
+      "state_restriction": null,
       "claim_deadline": "2026-11-24",
       "days_left": 49,
       "deadline_soon": false,
@@ -199,13 +248,19 @@
       "band": "high",
       "confidence": 0.99,
       "reason": "Because we found your Raging Waters settlement notice from Aug 12, 2026",
+      "checks": {
+        "company": "exact",
+        "period": "notice",
+        "product": "found",
+        "state": "none"
+      },
       "primary": {
         "email_id": "e32",
         "from_name": "Raging Waters Settlement Administrator",
         "subject": "Legal Notice: Raging Waters Processing Fee Class Action Settlement",
         "date": "2026-08-12",
         "email_type": "settlement_notice",
-        "product": "Admission tickets",
+        "product": "admission tickets",
         "evidence_line": "records show you bought admission tickets on ragingwaters.com between June 1, 2020 and June 22, 2026",
         "score": 1
       },
@@ -232,6 +287,9 @@
       "payout_note": "Varies by refund amount",
       "proof_required": true,
       "notice_id_required": true,
+      "class_period_start": "2017-09-05",
+      "class_period_end": null,
+      "state_restriction": null,
       "claim_deadline": "2026-12-01",
       "days_left": 56,
       "deadline_soon": false,
@@ -240,6 +298,12 @@
       "band": "high",
       "confidence": 0.95,
       "reason": "Because we found your USB-C Hub, 7-in-1 receipt from Jan 12, 2022",
+      "checks": {
+        "company": "exact",
+        "period": "inside",
+        "product": "found",
+        "state": "none"
+      },
       "primary": {
         "email_id": "e07",
         "from_name": "Amazon.com",
@@ -273,6 +337,9 @@
       "payout_note": "Pro rata share of $59.5M; California residents may get a double share",
       "proof_required": false,
       "notice_id_required": false,
+      "class_period_start": "2016-11-01",
+      "class_period_end": "2019-02-28",
+      "state_restriction": null,
       "claim_deadline": "2026-10-15",
       "days_left": 9,
       "deadline_soon": true,
@@ -281,6 +348,12 @@
       "band": "high",
       "confidence": 0.81,
       "reason": "Because we found your Flo Premium subscription payment from Apr 2, 2018",
+      "checks": {
+        "company": "exact",
+        "period": "inside",
+        "product": "no_keywords",
+        "state": "none"
+      },
       "primary": {
         "email_id": "e12",
         "from_name": "Flo",
@@ -303,6 +376,9 @@
       "payout_note": "$10 digital payment",
       "proof_required": true,
       "notice_id_required": false,
+      "class_period_start": "2019-08-29",
+      "class_period_end": "2023-08-04",
+      "state_restriction": null,
       "claim_deadline": "2026-11-03",
       "days_left": 28,
       "deadline_soon": false,
@@ -311,6 +387,12 @@
       "band": "high",
       "confidence": 0.9,
       "reason": "Because we found your Air Purifier Core 300 H13 True HEPA order from Nov 26, 2021",
+      "checks": {
+        "company": "exact",
+        "period": "inside",
+        "product": "found",
+        "state": "none"
+      },
       "primary": {
         "email_id": "e02",
         "from_name": "Amazon.com",
@@ -333,6 +415,9 @@
       "payout_note": "Two free months of membership (valued at $10+) automatically, or $5 cash with a claim",
       "proof_required": false,
       "notice_id_required": true,
+      "class_period_start": "2021-10-19",
+      "class_period_end": "2026-07-14",
+      "state_restriction": null,
       "claim_deadline": "2026-10-26",
       "days_left": 20,
       "deadline_soon": false,
@@ -341,6 +426,12 @@
       "band": "high",
       "confidence": 0.99,
       "reason": "Because we found your TED Foundation Inc. settlement notice from Aug 30, 2026",
+      "checks": {
+        "company": "exact",
+        "period": "notice",
+        "product": "no_keywords",
+        "state": "none"
+      },
       "primary": {
         "email_id": "e31",
         "from_name": "TED Settlement Administrator",
@@ -384,6 +475,9 @@
       "payout_note": "$0.50 per product: 5 products on attestation, up to 25 with receipts",
       "proof_required": false,
       "notice_id_required": false,
+      "class_period_start": "2018-11-01",
+      "class_period_end": "2026-08-29",
+      "state_restriction": null,
       "claim_deadline": "2026-11-27",
       "days_left": 52,
       "deadline_soon": false,
@@ -392,6 +486,12 @@
       "band": "high",
       "confidence": 0.86,
       "reason": "Because we found your Bar Soap, Natural Deodorant order from Feb 10, 2023",
+      "checks": {
+        "company": "exact",
+        "period": "inside",
+        "product": "no_keywords",
+        "state": "none"
+      },
       "primary": {
         "email_id": "e04",
         "from_name": "Dr. Squatch",
@@ -425,6 +525,9 @@
       "payout_note": "Up to $5 with no documentation, up to $10 with proof such as dated screenshots",
       "proof_required": false,
       "notice_id_required": false,
+      "class_period_start": null,
+      "class_period_end": "2026-07-27",
+      "state_restriction": null,
       "claim_deadline": "2026-11-16",
       "days_left": 41,
       "deadline_soon": false,
@@ -433,6 +536,12 @@
       "band": "high",
       "confidence": 0.86,
       "reason": "Because we found your Ibuprofen 200mg, Moisturizing Cream order from Aug 19, 2025",
+      "checks": {
+        "company": "exact",
+        "period": "inside",
+        "product": "no_keywords",
+        "state": "none"
+      },
       "primary": {
         "email_id": "e06",
         "from_name": "CVS Pharmacy",
@@ -466,6 +575,9 @@
       "payout_note": "About $6.70 per camera; one camera without a receipt",
       "proof_required": false,
       "notice_id_required": false,
+      "class_period_start": "2019-01-25",
+      "class_period_end": "2024-08-31",
+      "state_restriction": null,
       "claim_deadline": "2026-12-14",
       "days_left": 69,
       "deadline_soon": false,
@@ -474,6 +586,12 @@
       "band": "high",
       "confidence": 0.9,
       "reason": "Because we found your F200PRO Front and Rear Dash Cam order from Mar 14, 2022",
+      "checks": {
+        "company": "exact",
+        "period": "inside",
+        "product": "found",
+        "state": "none"
+      },
       "primary": {
         "email_id": "e03",
         "from_name": "Best Buy",
@@ -496,6 +614,9 @@
       "payout_note": "About $100 (General), $300 (Certified), $400 (New York subclass)",
       "proof_required": false,
       "notice_id_required": false,
+      "class_period_start": "2021-08-31",
+      "class_period_end": "2026-03-27",
+      "state_restriction": null,
       "claim_deadline": "2026-11-29",
       "days_left": 54,
       "deadline_soon": false,
@@ -504,6 +625,12 @@
       "band": "likely",
       "confidence": 0.7,
       "reason": "Because we found your Credit file dispute investigation account email from May 18, 2023",
+      "checks": {
+        "company": "exact",
+        "period": "inside",
+        "product": "found",
+        "state": "none"
+      },
       "primary": {
         "email_id": "e23",
         "from_name": "Equifax",
@@ -526,6 +653,9 @@
       "payout_note": "Up to $15, pro rata",
       "proof_required": false,
       "notice_id_required": null,
+      "class_period_start": "2023-05-30",
+      "class_period_end": "2025-08-11",
+      "state_restriction": null,
       "claim_deadline": "2026-12-01",
       "days_left": 56,
       "deadline_soon": false,
@@ -534,6 +664,12 @@
       "band": "likely",
       "confidence": 0.63,
       "reason": "Because we found your Virtual medical visit account email from Feb 11, 2024",
+      "checks": {
+        "company": "exact",
+        "period": "inside",
+        "product": "no_keywords",
+        "state": "none"
+      },
       "primary": {
         "email_id": "e24",
         "from_name": "MDLIVE",
@@ -547,5 +683,5 @@
       "supporting": []
     }
   ],
-  "hidden_count": 1
+  "hidden_count": 2
 }
